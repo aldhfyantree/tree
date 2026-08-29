@@ -16,5 +16,15 @@ service cloud.firestore {
       allow read: if signedIn() && (resource.data.submittedBy == request.auth.uid || isAdmin());
       allow update, delete: if isAdmin();
     }
+    match /analyticsPages/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == 1;
+      allow update: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == resource.data.count + 1;
+      allow read: if isAdmin();
+    }
+    match /analyticsNames/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == 1;
+      allow update: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == resource.data.count + 1;
+      allow read: if isAdmin();
+    }
   }
 }
