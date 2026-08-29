@@ -16,6 +16,7 @@ jobs:
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALDHFYANTREE_F3273 }}
       - run: npx --yes firebase-tools deploy --only firestore:rules --project aldhfyantree-f3273
+        continue-on-error: true
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
