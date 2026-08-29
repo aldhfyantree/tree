@@ -31,15 +31,15 @@ textarea {
   font: inherit;
 }
 .topbar {
-  min-height: 112px;
+  min-height: 126px;
   background: #fffdfaf2;
   border-bottom: 1px solid #ddd7c9;
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: "account heading login" "nav nav nav";
+  grid-template-columns: 1fr;
+  grid-template-areas: "heading" "nav";
   align-items: center;
-  gap: 28px;
-  padding: 10px clamp(16px, 4vw, 60px);
+  gap: 12px;
+  padding: 12px clamp(16px, 4vw, 60px) 0;
   position: sticky;
   top: 0;
   z-index: 20;
@@ -48,7 +48,8 @@ textarea {
 .family-heading {
   grid-area: heading;
   justify-self: center;
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-align: center;
   margin: 0;
 }
@@ -62,21 +63,38 @@ textarea {
 .topbar nav {
   grid-area: nav;
   justify-content: center;
+  width: min(760px, 100%);
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
 }
 .topbar > .primary {
-  grid-area: login;
+  position: absolute;
+  left: 14px;
+  top: 14px;
 }
 .topbar > .account {
-  grid-area: account;
+  position: absolute;
+  left: 14px;
+  top: 12px;
 }
 .nav-choice {
   display: flex !important;
   flex-direction: column;
   align-items: center;
   line-height: 1.4;
+  width: 50%;
+  min-height: 46px;
+  justify-content: center;
+  border-radius: 0;
+  border-bottom: 3px solid transparent;
+  color: var(--green);
+}
+.nav-choice.active {
+  border-bottom-color: var(--gold);
+  background: #f5f0e5;
 }
 .nav-choice small {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 500;
 }
 .brand {
@@ -737,14 +755,27 @@ textarea:focus {
 }
 @media (max-width: 800px) {
   .topbar {
-    min-height: 116px;
+    min-height: 126px;
     height: auto;
-    padding: 8px 12px;
+    padding: 10px 8px 0;
     gap: 8px;
   }
   .family-heading small {
     display: block;
     font-size: 8px;
+  }
+  .family-heading b {
+    font-size: 18px;
+  }
+  .topbar > .primary {
+    font-size: 9px;
+    left: 8px;
+    top: 11px;
+    padding: 7px;
+  }
+  .topbar > .account {
+    left: 8px;
+    top: 8px;
   }
   .topbar nav {
     display: flex;
