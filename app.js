@@ -138,16 +138,17 @@ async function loadPeople() {
   renderAll();
 }
 function renderAll() {
-  $("#peopleCount").textContent = ar(people.length);
-  $("#generationCount").textContent = ar(generations());
+  if ($("#peopleCount")) $("#peopleCount").textContent = ar(people.length);
+  if ($("#generationCount"))
+    $("#generationCount").textContent = ar(generations());
   const kids = childrenMap(),
     roots = kids.get("") || [];
   if (roots[0] && !expandedIds.size) expandedIds.add(roots[0].id);
   renderTree();
   const root = roots[0],
     branches = root ? kids.get(root.id) || [] : [];
-  $("#branchCount").textContent = ar(branches.length);
-  renderNameFrequency();
+  if ($("#branchCount")) $("#branchCount").textContent = ar(branches.length);
+  if ($("#mostNames")) renderNameFrequency();
   $("#branches").innerHTML = branches
     .map(
       (p, i) =>
@@ -267,8 +268,8 @@ function buildRadialData() {
   }
   branches.forEach(placeBranch);
   const maxDepth = Math.max(1, ...nodes.map((n) => n.depth)),
-    step = 60,
-    size = Math.max(760, maxDepth * step * 2 + 180),
+    step = 46,
+    size = Math.max(620, maxDepth * step * 2 + 140),
     center = size / 2;
   const placed = nodes.map((p) => {
     const r = p.depth * step,
@@ -291,7 +292,7 @@ function buildRadialData() {
     .forceSimulation(placed)
     .force("x", d3.forceX((d) => d.targetX).strength(0.34))
     .force("y", d3.forceY((d) => d.targetY).strength(0.34))
-    .force("collide", d3.forceCollide(55).strength(1).iterations(3))
+    .force("collide", d3.forceCollide(43).strength(1).iterations(3))
     .stop();
   for (let i = 0; i < 140; i++) simulation.tick();
   return {
@@ -330,8 +331,8 @@ function renderRadialTree() {
         displayName = rootNode ? "ضفي" : n.name,
         hasKids = (radialState.kids.get(n.id) || []).length,
         open = expandedIds.has(n.id),
-        w = rootNode ? 104 : main ? 116 : 96;
-      return `<g class="radial-person depth-${n.depth}${main ? " main-branch" : ""}${rootNode ? " root-person" : ""}${open ? " is-open" : ""}" data-node="${n.id}" transform="translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})"><rect class="person-card-bg" x="${-w / 2}" y="-21" width="${w}" height="42" rx="14"/><text class="node-name" y="5" text-anchor="middle">${esc(displayName)}</text>${hasKids ? `<circle class="branch-state" cx="${w / 2 - 7}" cy="-15" r="9"/><text class="branch-state-mark" x="${w / 2 - 7}" y="-11" text-anchor="middle">${open ? "−" : "+"}</text>` : ""}</g>`;
+        w = rootNode ? 90 : main ? 96 : 80;
+      return `<g class="radial-person depth-${n.depth}${main ? " main-branch" : ""}${rootNode ? " root-person" : ""}${open ? " is-open" : ""}" data-node="${n.id}" transform="translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})"><rect class="person-card-bg" x="${-w / 2}" y="-17" width="${w}" height="34" rx="11"/><text class="node-name" y="4" text-anchor="middle">${esc(displayName)}</text>${hasKids ? `<circle class="branch-state" cx="${w / 2 - 6}" cy="-12" r="8"/><text class="branch-state-mark" x="${w / 2 - 6}" y="-8" text-anchor="middle">${open ? "−" : "+"}</text>` : ""}</g>`;
     })
     .join("");
   $("#treeCanvas").classList.remove("classic-canvas");

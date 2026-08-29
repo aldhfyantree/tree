@@ -11,9 +11,9 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="styles.css?v=8" />
     <link rel="stylesheet" href="mobile-fix.css?v=5" />
-    <link rel="stylesheet" href="radial.css?v=7" />
+    <link rel="stylesheet" href="radial.css?v=8" />
   </head>
   <body>
     <header class="topbar">
@@ -27,6 +27,9 @@
         <a class="ghost nav-link nav-choice" href="pdf.html"
           ><span>الشجرة المطبوعة <small>(الإصدار الأول)</small></span></a
         >
+        <a class="ghost nav-link nav-choice" href="numbers.html"
+          ><span>العائلة بالأرقام</span></a
+        >
       </nav>
       <button id="loginBtn" class="primary">تسجيل دخول</button>
       <button id="accountBtn" class="account hidden">
@@ -37,9 +40,6 @@
     <main>
       <section id="treeView" class="view active">
         <div class="hero">
-          <p class="tree-intro">
-            افتح الفروع بالتدريج حتى تصل إلى اسمك، أو ابحث بتسلسل النسب.
-          </p>
           <div class="searchbox">
             <span>⌕</span
             ><input
@@ -48,21 +48,6 @@
               placeholder="اكتب اسمك ثم بن واسم الأب… مثال: محمد بن علي"
             /><kbd>بحث</kbd>
           </div>
-          <div class="metrics">
-            <span><b id="peopleCount">٩٨٢</b> شخصًا</span
-            ><span><b id="generationCount">—</b> أجيال</span
-            ><span><b id="branchCount">٤</b> فروع رئيسية</span>
-          </div>
-          <section class="name-frequency" aria-label="تكرار الأسماء">
-            <div>
-              <h3>أكثر ٥ أسماء تكراراً</h3>
-              <div id="mostNames" class="name-chips"></div>
-            </div>
-            <div>
-              <h3>أقل ٥ أسماء تكراراً</h3>
-              <div id="leastNames" class="name-chips"></div>
-            </div>
-          </section>
         </div>
 
         <div class="branch-strip" id="branches"></div>
@@ -81,6 +66,9 @@
             </p>
           </aside>
           <section class="tree-card">
+            <p class="tree-instructions">
+              افتح الفروع بالتدريج حتى تصل إلى اسمك. اضغط على الاسم للخيارات.
+            </p>
             <div class="tree-toolbar">
               <div id="breadcrumbs">
                 <span class="status-dot"></span
@@ -252,6 +240,6 @@
     <div id="toast" class="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="seed-data.js?v=7"></script>
-    <script type="module" src="app.js?v=7"></script>
+    <script type="module" src="app.js?v=8"></script>
   </body>
 </html>
