@@ -2,18 +2,18 @@
 .branch-strip {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 6px;
   max-width: 1050px;
   margin: 0 auto;
-  padding: 0 20px 12px;
+  padding: 0 8px 12px;
 }
 .branch-strip .branch-btn {
-  width: auto;
-  min-width: 150px;
+  width: calc(25% - 5px);
+  min-width: 0;
   background: var(--paper);
   border: 1px solid var(--line);
   box-shadow: 0 6px 20px #17352b0b;
-  padding: 10px 14px;
+  padding: 10px 5px;
 }
 .branch-strip .branch-btn b {
   font-size: 12px;
@@ -215,21 +215,14 @@
 }
 @media (max-width: 800px) {
   .branch-strip .branch-btn {
-    min-width: 132px;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas: "dot name" "count count";
+    min-width: 0;
+    display: flex;
     align-items: center;
-  }
-  .branch-strip .branch-dot {
-    grid-area: dot;
+    justify-content: center;
+    gap: 4px;
   }
   .branch-strip .branch-btn b {
-    grid-area: name;
-  }
-  .branch-strip .branch-btn small {
-    grid-area: count;
-    text-align: center;
+    font-size: 10px;
   }
   .hero {
     padding-bottom: 24px;
@@ -238,12 +231,13 @@
     font-size: 34px;
   }
   .branch-strip {
-    justify-content: flex-start;
-    overflow: auto;
-    padding: 0 10px 10px;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 6px 10px;
   }
   .branch-strip .branch-btn {
-    min-width: 130px;
+    width: calc(25% - 4px);
+    min-width: 0;
   }
   .radial-workspace {
     padding: 0 8px 30px;
