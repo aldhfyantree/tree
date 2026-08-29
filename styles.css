@@ -6,7 +6,7 @@
   --cream: #f6f2e8;
   --paper: #fffdf8;
   --line: #d9d3c4;
-  --muted: #728078;
+  --muted: #526159;
   --danger: #a33b32;
   --shadow: 0 18px 55px #17352b12;
 }
@@ -32,7 +32,7 @@ textarea {
 }
 .topbar {
   min-height: 104px;
-  background: #fffdfaf2;
+  background: #fffdfa;
   border-bottom: 1px solid #ddd7c9;
   display: grid;
   grid-template-columns: 1fr;
@@ -85,13 +85,6 @@ textarea {
   left: 14px;
   top: 12px;
 }
-.admin-top {
-  position: absolute !important;
-  left: 58px !important;
-  top: 11px !important;
-  font-size: 9px;
-  padding: 7px 9px;
-}
 .nav-choice {
   display: flex !important;
   flex-direction: column;
@@ -103,8 +96,8 @@ textarea {
   border-radius: 11px 11px 0 0;
   border: 0;
   border-bottom: 0;
-  color: var(--green);
-  background: #dcd6ca;
+  color: #31453b;
+  background: #cbc1ae;
   text-decoration: none !important;
   font-size: 10px !important;
   font-weight: 600;
@@ -113,7 +106,8 @@ textarea {
   display: none !important;
 }
 .nav-choice.active {
-  background: var(--cream);
+  background: #fffdf8;
+  color: #123e2f;
   box-shadow: 0 -3px 10px #17352b13;
   position: relative;
   z-index: 2;
@@ -125,7 +119,7 @@ textarea {
   left: 0;
   bottom: -3px;
   height: 4px;
-  background: var(--cream);
+  background: #fffdf8;
 }
 .nav-choice small {
   display: block;
@@ -768,6 +762,16 @@ nav {
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 18px;
+}
+.request-target {
+  display: block;
+  margin: 7px 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: #e8f0eb;
+  color: #123e2f;
+  font-size: 11px;
+  line-height: 1.8;
 }
 .review-card header {
   display: flex;
