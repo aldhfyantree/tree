@@ -1,32 +1,120 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#173f32">
-  <title>الشجرة الأصلية PDF — شجرة الضفيان</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
-  <style>
-    body{min-height:100vh}.pdf-page{max-width:1500px;margin:auto;padding:24px}.pdf-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.pdf-head h1{font-size:clamp(22px,4vw,38px);margin:0;color:var(--green)}.pdf-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.pdf-actions{display:flex;gap:8px;white-space:nowrap}.pdf-frame{width:100%;height:calc(100vh - 175px);min-height:650px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow)}.nav-link{text-decoration:none;display:inline-block}.mobile-pdf-note{display:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted)}
-    @media(max-width:800px){.pdf-page{padding:14px}.pdf-head{align-items:flex-start;flex-direction:column}.pdf-actions{width:100%}.pdf-actions a{flex:1;text-align:center}.pdf-frame{height:calc(100vh - 235px);min-height:480px}.topbar nav{display:flex;gap:0}.topbar nav .ghost{font-size:9px;padding:7px 5px}.topbar .brand b{display:none}.mobile-pdf-note{display:block}}
-  </style>
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="index.html"><span class="brand-mark">ض</span><span><b>شجرة الضفيان</b><small>سجل العائلة التفاعلي</small></span></a>
-    <nav><a class="ghost nav-link" href="index.html">الشجرة التفاعلية</a><a class="ghost nav-link active" href="pdf.html">الإصدار الأول</a></nav>
-    <a class="primary nav-link" href="index.html?login=1">تسجيل دخول</a>
-  </header>
-  <main class="pdf-page">
-    <div class="pdf-head">
-      <div><p class="eyebrow">الإصدار الأول</p><h1>شجرة الضفيان الأصلية</h1><p>تم العمل على جمع وترتيب ومتابعة هذا الإصدار على يد الأستاذ علي بن محمد بن علي الضفيان.</p></div>
-      <div class="pdf-actions"><a class="primary nav-link" href="shajarat-aldhfyan-original.pdf" target="_blank" rel="noopener">فتح كامل</a><a class="secondary nav-link" href="shajarat-aldhfyan-original.pdf" download>تحميل PDF</a></div>
-    </div>
-    <div class="mobile-pdf-note">إذا لم يظهر الملف داخل الصفحة، استخدم زر «فتح كامل» أعلاه.</div>
-    <iframe class="pdf-frame" src="shajarat-aldhfyan-original.pdf#view=FitH" title="شجرة الضفيان الأصلية"></iframe>
-  </main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#173f32" />
+    <title>الشجرة الأصلية PDF — شجرة الضفيان</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=5" />
+    <style>
+      body {
+        min-height: 100vh;
+      }
+      .pdf-page {
+        max-width: 1500px;
+        margin: auto;
+        padding: 24px;
+      }
+      .pdf-head {
+        margin-bottom: 18px;
+      }
+      .pdf-head h1 {
+        font-size: clamp(22px, 4vw, 38px);
+        margin: 0;
+        color: var(--green);
+      }
+      .pdf-head p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .pdf-viewer {
+        width: 100%;
+        min-height: 70vh;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #e8e4da;
+        box-shadow: var(--shadow);
+        padding: 14px;
+        overflow: auto;
+        text-align: center;
+      }
+      .pdf-viewer canvas {
+        display: block;
+        max-width: 100%;
+        height: auto !important;
+        margin: auto;
+        background: #fff;
+        box-shadow: 0 6px 24px #0002;
+      }
+      .pdf-loading {
+        padding: 80px 20px;
+        color: var(--muted);
+      }
+      .nav-link {
+        text-decoration: none;
+        display: inline-block;
+      }
+      @media (max-width: 800px) {
+        .pdf-page {
+          padding: 14px;
+        }
+        .pdf-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .pdf-viewer {
+          padding: 5px;
+          border-radius: 12px;
+        }
+        .topbar nav {
+          display: flex;
+          gap: 0;
+        }
+        .topbar nav .ghost {
+          font-size: 9px;
+          padding: 7px 5px;
+        }
+        .topbar .brand b {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html"
+        ><span class="brand-mark">الضفيان</span
+        ><span><b>شجرة الضفيان</b><small>سجل العائلة التفاعلي</small></span></a
+      >
+      <nav>
+        <a class="ghost nav-link" href="index.html">الشجرة التفاعلية</a
+        ><a class="ghost nav-link active" href="pdf.html">الإصدار الأول</a>
+      </nav>
+      <a class="primary nav-link" href="index.html?login=1">تسجيل دخول</a>
+    </header>
+    <main class="pdf-page">
+      <div class="pdf-head">
+        <div>
+          <p class="eyebrow">الإصدار الأول</p>
+          <h1>شجرة الضفيان الأصلية</h1>
+          <p>
+            تم العمل على جمع وترتيب ومتابعة هذا الإصدار على يد الأستاذ علي بن
+            محمد بن علي الضفيان.
+          </p>
+        </div>
+      </div>
+      <div id="pdfViewer" class="pdf-viewer">
+        <p id="pdfLoading" class="pdf-loading">جارٍ فتح الإصدار الأول…</p>
+        <canvas id="pdfCanvas" hidden></canvas>
+      </div>
+    </main>
+    <script type="module" src="pdf-viewer.js?v=1"></script>
+  </body>
 </html>
