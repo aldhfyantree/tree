@@ -31,17 +31,53 @@ textarea {
   font: inherit;
 }
 .topbar {
-  height: 76px;
+  min-height: 112px;
   background: #fffdfaf2;
   border-bottom: 1px solid #ddd7c9;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "account heading login" "nav nav nav";
   align-items: center;
   gap: 28px;
-  padding: 0 clamp(16px, 4vw, 60px);
+  padding: 10px clamp(16px, 4vw, 60px);
   position: sticky;
   top: 0;
   z-index: 20;
   backdrop-filter: blur(16px);
+}
+.family-heading {
+  grid-area: heading;
+  justify-self: center;
+  display: block;
+  text-align: center;
+  margin: 0;
+}
+.family-heading b {
+  font-size: clamp(16px, 2.4vw, 23px);
+}
+.family-heading small {
+  margin-top: 3px;
+  font-size: 11px;
+}
+.topbar nav {
+  grid-area: nav;
+  justify-content: center;
+}
+.topbar > .primary {
+  grid-area: login;
+}
+.topbar > .account {
+  grid-area: account;
+}
+.nav-choice {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.4;
+}
+.nav-choice small {
+  font-size: 8px;
+  font-weight: 500;
 }
 .brand {
   display: flex;
@@ -75,6 +111,50 @@ textarea {
 nav {
   display: flex;
   gap: 4px;
+}
+.tree-intro {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+.name-frequency {
+  width: min(900px, 100%);
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.name-frequency > div {
+  background: #fffaf2aa;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px;
+}
+.name-frequency h3 {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+.name-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.name-chips span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e4ddce;
+  border-radius: 20px;
+  padding: 5px 9px;
+  font-size: 9px;
+}
+.name-chips em {
+  color: var(--gold);
+  font-style: normal;
+  font-weight: 700;
 }
 .ghost,
 .account {
@@ -657,16 +737,17 @@ textarea:focus {
 }
 @media (max-width: 800px) {
   .topbar {
-    height: 64px;
-    padding: 0 12px;
+    min-height: 116px;
+    height: auto;
+    padding: 8px 12px;
     gap: 8px;
   }
-  .brand small,
-  .topbar nav {
-    display: none;
+  .family-heading small {
+    display: block;
+    font-size: 8px;
   }
-  .brand {
-    margin-left: auto;
+  .topbar nav {
+    display: flex;
   }
   .brand-mark {
     width: auto;
@@ -679,11 +760,14 @@ textarea:focus {
     padding: 8px;
   }
   .hero {
-    padding-top: 48px;
+    padding-top: 22px;
   }
   .metrics {
     gap: 12px;
     flex-wrap: wrap;
+  }
+  .name-frequency {
+    grid-template-columns: 1fr;
   }
   .workspace {
     display: block;
