@@ -31,14 +31,14 @@ textarea {
   font: inherit;
 }
 .topbar {
-  min-height: 126px;
+  min-height: 116px;
   background: #fffdfaf2;
   border-bottom: 1px solid #ddd7c9;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas: "heading" "nav";
   align-items: center;
-  gap: 12px;
+  gap: 5px;
   padding: 12px clamp(16px, 4vw, 60px) 0;
   position: sticky;
   top: 0;
@@ -52,20 +52,27 @@ textarea {
   flex-direction: column;
   text-align: center;
   margin: 0;
+  gap: 1px;
 }
 .family-heading b {
-  font-size: clamp(16px, 2.4vw, 23px);
+  font-size: clamp(20px, 3vw, 30px);
+  color: var(--green);
+  line-height: 1.35;
 }
 .family-heading small {
-  margin-top: 3px;
-  font-size: 11px;
+  margin-top: 0;
+  font-size: 10px;
+  color: var(--gold);
 }
 .topbar nav {
   grid-area: nav;
   justify-content: center;
   width: min(760px, 100%);
   margin: 0 auto;
-  border-top: 1px solid var(--line);
+  gap: 2px;
+  align-items: end;
+  background: #e9e4d9;
+  padding: 2px 2px 0;
 }
 .topbar > .primary {
   position: absolute;
@@ -82,16 +89,30 @@ textarea {
   flex-direction: column;
   align-items: center;
   line-height: 1.4;
-  width: 50%;
+  flex: 1;
   min-height: 46px;
   justify-content: center;
   border-radius: 0;
-  border-bottom: 3px solid transparent;
+  border: 1px solid #ddd6c7;
+  border-bottom: 0;
   color: var(--green);
+  background: #e8e3d8;
 }
 .nav-choice.active {
-  border-bottom-color: var(--gold);
-  background: #f5f0e5;
+  background: var(--cream);
+  border-color: var(--line);
+  box-shadow: 0 -4px 12px #17352b0a;
+  position: relative;
+  z-index: 2;
+}
+.nav-choice.active:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: -3px;
+  height: 4px;
+  background: var(--cream);
 }
 .nav-choice small {
   font-size: 7px;
@@ -135,6 +156,15 @@ nav {
   font-size: 13px;
   margin: 0 0 20px;
 }
+.tree-instructions {
+  margin: 0;
+  padding: 9px 14px;
+  text-align: center;
+  color: var(--muted);
+  background: #f5f0e5;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+}
 .name-frequency {
   width: min(900px, 100%);
   margin: 18px auto 0;
@@ -173,6 +203,94 @@ nav {
   color: var(--gold);
   font-style: normal;
   font-weight: 700;
+}
+.numbers-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 34px 20px 70px;
+}
+.numbers-hero {
+  text-align: center;
+  margin-bottom: 26px;
+}
+.numbers-hero h1 {
+  color: var(--green);
+  font-size: clamp(26px, 5vw, 44px);
+  margin: 4px 0;
+}
+.numbers-hero > p:last-child {
+  color: var(--muted);
+  font-size: 11px;
+}
+.number-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.number-cards article {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.number-cards b {
+  display: block;
+  color: var(--green);
+  font-size: 30px;
+}
+.number-cards span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.frequency-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+.frequency-grid > article {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+}
+.frequency-grid h2 {
+  font-size: 14px;
+  margin: 0 0 14px;
+  color: var(--green);
+}
+.ranking-list {
+  display: grid;
+  gap: 8px;
+}
+.ranking-list > div {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 9px;
+  background: #f7f3e9;
+  border-radius: 12px;
+  padding: 9px;
+}
+.ranking-list i {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #fff;
+  font-size: 9px;
+  font-style: normal;
+}
+.ranking-list b {
+  font-size: 11px;
+}
+.ranking-list span {
+  color: var(--muted);
+  font-size: 9px;
 }
 .ghost,
 .account {
@@ -755,7 +873,7 @@ textarea:focus {
 }
 @media (max-width: 800px) {
   .topbar {
-    min-height: 126px;
+    min-height: 116px;
     height: auto;
     padding: 10px 8px 0;
     gap: 8px;
@@ -765,7 +883,7 @@ textarea:focus {
     font-size: 8px;
   }
   .family-heading b {
-    font-size: 18px;
+    font-size: 21px;
   }
   .topbar > .primary {
     font-size: 9px;
@@ -798,6 +916,22 @@ textarea:focus {
     flex-wrap: wrap;
   }
   .name-frequency {
+    grid-template-columns: 1fr;
+  }
+  .numbers-page {
+    padding: 24px 12px 50px;
+  }
+  .number-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+  .number-cards article {
+    padding: 16px 8px;
+  }
+  .number-cards b {
+    font-size: 25px;
+  }
+  .frequency-grid {
     grid-template-columns: 1fr;
   }
   .workspace {
