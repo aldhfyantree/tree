@@ -1,0 +1,15 @@
+#treeCanvas{direction:ltr;position:relative}
+#tree{direction:rtl;width:100%;min-width:100%;transform-origin:top center}
+.family-chart{direction:rtl;display:flex;justify-content:center;width:max-content;min-width:100%;margin-inline:auto}
+.hierarchy-root{min-width:max-content}
+.info-link{font-size:9px;padding:3px 9px;border:1px solid currentColor;border-radius:20px;opacity:.72;margin-top:3px}
+@media(max-width:800px){
+  .hero{padding-bottom:22px}
+  .workspace{padding-inline:8px}
+  .tree-card{min-height:470px}
+  #treeCanvas{min-height:415px;padding:18px 8px}
+  .family-chart{padding-inline:30px}
+  .sidepanel{display:flex;gap:6px;align-items:center;overflow:auto}
+  #branches{display:flex;flex:1}
+  .side-action{white-space:nowrap}
+}
