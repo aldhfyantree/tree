@@ -286,7 +286,7 @@ function buildRadialData() {
   const rootNode = placed.find((n) => n.id === root.id);
   if (rootNode) {
     rootNode.fx = center;
-    rootNode.fy = center;
+    rootNode.fy = center - 45;
   }
   const simulation = d3
     .forceSimulation(placed)
@@ -452,13 +452,26 @@ $("#tree").onclick = (e) => {
   showPersonMenu(p);
   const hasKids = (childrenMap().get(p.id) || []).length;
   if (hasKids) {
+    const oldNode = radialState?.nodeMap.get(p.id),
+      oldView = $("#familySvg")
+        ?.getAttribute("viewBox")
+        ?.split(/\s+/)
+        .map(Number);
     if (expandedIds.has(p.id)) expandedIds.delete(p.id);
     else expandedIds = new Set([...ancestorIds(p.id), p.id]);
     renderTree();
     showPersonMenu(p);
-    requestAnimationFrame(() =>
-      treeMode === "radial" ? zoomToPerson(p.id) : focusClassic(p.id),
-    );
+    requestAnimationFrame(() => {
+      if (treeMode === "radial" && oldNode && oldView?.length === 4) {
+        const fresh = radialState?.nodeMap.get(p.id),
+          svg = $("#familySvg");
+        if (fresh && svg)
+          svg.setAttribute(
+            "viewBox",
+            `${oldView[0] + fresh.x - oldNode.x} ${oldView[1] + fresh.y - oldNode.y} ${oldView[2]} ${oldView[3]}`,
+          );
+      } else if (treeMode === "classic") focusClassic(p.id);
+    });
   }
 };
 function bindRadialGestures() {
@@ -725,6 +738,7 @@ onAuthStateChanged(auth, async (u) => {
     $("#loginBtn").classList.remove("hidden");
     $("#accountBtn").classList.add("hidden");
     $("#reviewBtn")?.classList.add("hidden");
+    $("#adminTopBtn")?.classList.add("hidden");
     return;
   }
   $("#loginBtn").classList.add("hidden");
@@ -738,8 +752,11 @@ onAuthStateChanged(auth, async (u) => {
   $("#accountName").textContent = userProfile?.name || "حسابي";
   if (isAdmin()) {
     $("#reviewBtn")?.classList.remove("hidden");
+    $("#adminTopBtn")?.classList.remove("hidden");
     $("#seedBtn").classList.toggle("hidden", remoteLoaded);
     await updatePendingBadge();
+    if (new URLSearchParams(location.search).get("review") === "1")
+      switchView("review");
   }
 });
 $("#profileSetupForm").onsubmit = async (e) => {

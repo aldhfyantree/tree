@@ -72,8 +72,8 @@ textarea {
   margin: 0 auto;
   gap: 0;
   align-items: end;
-  background: #dcd6ca;
-  padding: 5px 5px 0;
+  background: transparent;
+  padding: 5px 0 0;
 }
 .topbar > .primary {
   position: absolute;
@@ -84,6 +84,13 @@ textarea {
   position: absolute;
   left: 14px;
   top: 12px;
+}
+.admin-top {
+  position: absolute !important;
+  left: 58px !important;
+  top: 11px !important;
+  font-size: 9px;
+  padding: 7px 9px;
 }
 .nav-choice {
   display: flex !important;
@@ -97,10 +104,13 @@ textarea {
   border: 0;
   border-bottom: 0;
   color: var(--green);
-  background: transparent;
+  background: #dcd6ca;
   text-decoration: none !important;
   font-size: 10px !important;
   font-weight: 600;
+}
+.branch-strip[hidden] {
+  display: none !important;
 }
 .nav-choice.active {
   background: var(--cream);
@@ -396,7 +406,7 @@ nav {
 }
 .hero {
   text-align: center;
-  padding: 72px 20px 38px;
+  padding: 8px 20px;
   background: radial-gradient(circle at 50% -20%, #fff 0, #f6f2e8 66%);
 }
 .eyebrow {
@@ -417,7 +427,7 @@ nav {
 }
 .searchbox {
   max-width: 680px;
-  margin: 28px auto 22px;
+  margin: 4px auto;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 15px;
@@ -946,7 +956,7 @@ textarea:focus {
     padding: 8px;
   }
   .hero {
-    padding-top: 22px;
+    padding: 5px 10px;
   }
   .metrics {
     gap: 12px;
