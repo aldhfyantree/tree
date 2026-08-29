@@ -412,6 +412,52 @@
   overflow: hidden !important;
   touch-action: none !important;
 }
+.classic-canvas #classicSvg {
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+.classic-canvas #classicSvg:active {
+  cursor: grabbing;
+}
+.classic-link {
+  fill: none;
+  stroke: #c7c0ad;
+  stroke-width: 1.2;
+}
+.classic-person {
+  cursor: pointer;
+}
+.classic-card-bg {
+  fill: #fff;
+  stroke: var(--line);
+  filter: drop-shadow(0 3px 7px #17352b18);
+}
+.classic-node-name {
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--ink);
+  pointer-events: none;
+}
+.classic-person.path-node .classic-card-bg {
+  fill: #f5ead4;
+  stroke: var(--gold);
+}
+.classic-person.selected .classic-card-bg {
+  fill: #dcecdf;
+  stroke: var(--green);
+  stroke-width: 3;
+}
+.classic-person.root-person .classic-card-bg {
+  fill: var(--green);
+  stroke: var(--green);
+}
+.classic-person.root-person .classic-node-name {
+  fill: #fff;
+}
 .classic-tree {
   direction: rtl;
   min-width: max-content;
@@ -528,9 +574,6 @@
   .topbar nav .ghost {
     font-size: 9px;
     padding: 7px 5px;
-  }
-  .topbar .brand b {
-    display: none;
   }
   .person-actions {
     bottom: 8px;
