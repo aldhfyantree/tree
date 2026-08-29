@@ -48,7 +48,7 @@
           <div class="tree-toolbar">
             <div id="breadcrumbs"><span class="status-dot"></span><span id="dataStatus">الفروع الرئيسية</span></div>
             <div class="view-switch"><button class="active" data-tree-mode="radial">دائري</button><button data-tree-mode="classic">شجري</button></div>
-            <div class="zoom-tools"><button id="expandAllTop" class="wide-tool" title="توسيع كامل الشجرة">توسيع الكل</button><button id="rootBtnMobile" title="إغلاق الفروع">⌂</button><button id="zoomOut" title="تصغير">−</button><span id="zoomLabel">١٠٠٪</span><button id="zoomIn" title="تكبير">＋</button></div>
+            <div class="zoom-tools"><button id="expandAllTop" class="wide-tool" title="توسيع كامل الشجرة">توسيع الكل</button><button id="fitTreeBtn" class="wide-tool light-tool" title="احتواء الشجرة داخل الشاشة">احتواء</button><button id="rootBtnMobile" title="إغلاق الفروع">⌂</button><button id="zoomOut" title="تصغير">−</button><span id="zoomLabel">١٠٠٪</span><button id="zoomIn" title="تكبير">＋</button></div>
           </div>
           <div id="searchResults" class="search-results hidden"></div>
           <div id="treeCanvas"><div id="tree"></div></div>
@@ -69,11 +69,9 @@
     <div class="dialog-actions"><button id="suggestBtn" class="primary">اقتراح تعديل</button><button id="addChildBtn" class="secondary">إضافة ابن</button></div>
   </dialog>
 
-  <div id="personMenu" class="person-menu hidden" role="menu">
+  <div id="personMenu" class="person-actions hidden" role="toolbar" aria-label="خيارات الشخص المحدد">
     <header><b id="menuPersonName"></b><button id="closePersonMenu" aria-label="إغلاق">×</button></header>
-    <button id="copyLineageBtn">نسخ الاسم الكامل</button>
-    <button id="addChildMenuBtn">إضافة ابن</button>
-    <button id="suggestMenuBtn">طلب تعديل</button>
+    <div class="person-action-buttons"><button id="copyLineageBtn">نسخ الاسم الكامل</button><button id="addChildMenuBtn">إضافة ابن</button><button id="suggestMenuBtn">طلب تعديل</button></div>
   </div>
 
   <dialog id="loginDialog" class="modal">
@@ -102,7 +100,8 @@
 
   <dialog id="accountDialog" class="modal"><button class="close" data-close="accountDialog">×</button><h2>حساب المساهم</h2><p id="accountInfo"></p><button id="reviewBtn" class="secondary full hidden" data-view="review">طلبات المراجعة <i id="pendingBadge">٠</i></button><button id="logoutBtn" class="danger full">تسجيل الخروج</button></dialog>
   <div id="toast" class="toast"></div>
-  <script src="seed-data.js?v=5"></script>
-  <script type="module" src="app.js?v=5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="seed-data.js?v=6"></script>
+  <script type="module" src="app.js?v=6"></script>
 </body>
 </html>
