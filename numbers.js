@@ -40,6 +40,18 @@ document.querySelector("#branchCount").textContent = ar(
   root ? (children.get(root.id) || []).length : 0,
 );
 document.querySelector("#uniqueCount").textContent = ar(counts.size);
+const countDesc = (id) =>
+  (children.get(id) || []).reduce(
+    (total, child) => total + 1 + countDesc(child.id),
+    0,
+  );
+const branches = root ? children.get(root.id) || [] : [];
+document.querySelector("#branchBreakdown").innerHTML = branches
+  .map(
+    (branch) =>
+      `<article><b>${branch.name}</b><span>${ar(countDesc(branch.id) + 1)} شخصاً</span></article>`,
+  )
+  .join("");
 const values = [...counts.values()];
 const draw = (id, list) =>
   (document.querySelector(id).innerHTML = list
