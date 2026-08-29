@@ -81,8 +81,8 @@
 .family-link {
   fill: none;
   stroke: #c9c1ad;
-  stroke-width: 1.25;
-  opacity: 0.54;
+  stroke-width: 1.6;
+  opacity: 0.82;
   transition: 0.2s;
 }
 .node-halo {
@@ -161,7 +161,7 @@
   opacity: 1;
 }
 .has-selection .family-link {
-  opacity: 0.18;
+  opacity: 0.45;
 }
 .has-selection .family-link.path-active {
   stroke: var(--green);
