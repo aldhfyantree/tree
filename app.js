@@ -68,7 +68,7 @@ const ar = (n) => Number(n).toLocaleString("ar-SA");
 const norm = (s) =>
   (s || "")
     .normalize("NFKD")
-    .replace(/[ًٌٍَُِّْـ]/g, "")
+    .replace(/[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06edـ]/g, "")
     .replace(/[أإآ]/g, "ا")
     .replace(/ة/g, "ه")
     .replace(/عبد\s+/g, "عبد")
@@ -158,9 +158,16 @@ function renderAll() {
 function renderNameFrequency() {
   const names = new Map();
   people.forEach((p) => {
-    const key = norm(p.name);
+    const cleanName = String(p.name || "")
+        .replace(/\s*«.*?»\s*/g, "")
+        .trim(),
+      rawKey = norm(cleanName),
+      key = ["ابراهيم", "برايهم", "ابرايهم", "ابراهم"].includes(rawKey)
+        ? "ابراهيم"
+        : rawKey,
+      displayName = key === "ابراهيم" ? "إبراهيم" : cleanName;
     if (!key) return;
-    const item = names.get(key) || { name: p.name, count: 0 };
+    const item = names.get(key) || { name: displayName, count: 0 };
     item.count++;
     names.set(key, item);
   });
@@ -271,8 +278,22 @@ function buildRadialData() {
       x: center + Math.cos(a) * r,
       y: center + Math.sin(a) * r,
       a,
+      targetX: center + Math.cos(a) * r,
+      targetY: center + Math.sin(a) * r,
     };
   });
+  const rootNode = placed.find((n) => n.id === root.id);
+  if (rootNode) {
+    rootNode.fx = center;
+    rootNode.fy = center;
+  }
+  const simulation = d3
+    .forceSimulation(placed)
+    .force("x", d3.forceX((d) => d.targetX).strength(0.34))
+    .force("y", d3.forceY((d) => d.targetY).strength(0.34))
+    .force("collide", d3.forceCollide(55).strength(1).iterations(3))
+    .stop();
+  for (let i = 0; i < 140; i++) simulation.tick();
   return {
     root,
     kids,
