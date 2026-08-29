@@ -152,7 +152,7 @@ function renderAll() {
   $("#branches").innerHTML = branches
     .map(
       (p, i) =>
-        `<button class="branch-btn branch-${i + 1}" data-branch="${p.id}"><span class="branch-dot"></span><b>${p.name}</b><small>${ar(countDesc(p.id, kids) + 1)} شخصًا</small></button>`,
+        `<button class="branch-btn branch-${i + 1}" data-branch="${p.id}"><span class="branch-dot"></span><b>${p.name}</b></button>`,
     )
     .join("");
 }
