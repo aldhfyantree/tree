@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=5" />
+    <link rel="stylesheet" href="styles.css?v=7" />
     <style>
       body {
         min-height: 100vh;
@@ -53,6 +53,20 @@
         background: #fff;
         box-shadow: 0 6px 24px #0002;
       }
+      .pdf-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+      }
+      .pdf-open-hint {
+        display: inline-block;
+        margin: 14px auto 2px;
+        background: var(--green);
+        color: #fff;
+        border-radius: 24px;
+        padding: 9px 18px;
+        font-size: 11px;
+      }
       .pdf-loading {
         padding: 80px 20px;
         color: var(--muted);
@@ -81,21 +95,20 @@
           font-size: 9px;
           padding: 7px 5px;
         }
-        .topbar .brand b {
-          display: none;
-        }
       }
     </style>
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="index.html"
-        ><span class="brand-mark">الضفيان</span
-        ><span><b>شجرة الضفيان</b><small>سجل العائلة التفاعلي</small></span></a
+      <a class="brand family-heading" href="index.html"
+        ><b>شجرة عائلة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></a
       >
       <nav>
-        <a class="ghost nav-link" href="index.html">الشجرة التفاعلية</a
-        ><a class="ghost nav-link active" href="pdf.html">الإصدار الأول</a>
+        <a class="ghost nav-link nav-choice" href="index.html"
+          ><span>الشجرة بطريقة تفاعلية</span></a
+        ><a class="ghost nav-link nav-choice active" href="pdf.html"
+          ><span>الشجرة المطبوعة</span><small>الإصدار الأول</small></a
+        >
       </nav>
       <a class="primary nav-link" href="index.html?login=1">تسجيل دخول</a>
     </header>
@@ -111,10 +124,19 @@
         </div>
       </div>
       <div id="pdfViewer" class="pdf-viewer">
-        <p id="pdfLoading" class="pdf-loading">جارٍ فتح الإصدار الأول…</p>
-        <canvas id="pdfCanvas" hidden></canvas>
+        <a
+          class="pdf-link"
+          href="shajarat-aldhfyan-original.pdf"
+          aria-label="فتح الشجرة المطبوعة بالجودة الكاملة"
+        >
+          <p id="pdfLoading" class="pdf-loading">
+            جارٍ فتح معاينة الإصدار الأول…
+          </p>
+          <canvas id="pdfCanvas" hidden></canvas>
+          <span class="pdf-open-hint">اضغط لفتح النسخة عالية الجودة</span>
+        </a>
       </div>
     </main>
-    <script type="module" src="pdf-viewer.js?v=1"></script>
+    <script type="module" src="pdf-viewer.js?v=2"></script>
   </body>
 </html>
