@@ -8,20 +8,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="mobile-fix.css?v=4">
-  <link rel="stylesheet" href="radial.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="mobile-fix.css?v=5">
+  <link rel="stylesheet" href="radial.css?v=5">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="#"><span class="brand-mark">ض</span><span><b>شجرة الضفيان</b><small>سجل العائلة التفاعلي</small></span></a>
     <nav>
-      <button class="ghost active" data-view="tree">الشجرة</button>
-      <a class="ghost nav-link" href="pdf.html">الشجرة الأصلية PDF</a>
-      <button class="ghost" data-view="about">عن المشروع</button>
-      <button id="reviewBtn" class="ghost hidden" data-view="review">المراجعة <i id="pendingBadge">٠</i></button>
+      <button class="ghost active" data-view="tree">الشجرة التفاعلية</button>
+      <a class="ghost nav-link" href="pdf.html">الإصدار الأول</a>
     </nav>
-    <button id="loginBtn" class="primary">دخول المساهمين</button>
+    <button id="loginBtn" class="primary">تسجيل دخول</button>
     <button id="accountBtn" class="account hidden"><span id="accountInitial">ع</span><span id="accountName">حسابي</span></button>
   </header>
 
@@ -30,8 +28,8 @@
       <div class="hero">
         <p class="eyebrow">إرثٌ يُحفظ، وصلةٌ لا تنقطع</p>
         <h1>شجرة عائلة الضفيان</h1>
-        <p>استكشف الفروع، وابحث عن أي شخص، وساهم بمعلومة موثوقة.</p>
-        <div class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="ابحث بالاسم أو تسلسل النسب…"><kbd>بحث</kbd></div>
+        <p>افتح الفروع بالتدريج حتى تصل إلى اسمك، أو ابحث بتسلسل النسب.</p>
+        <div class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="اكتب اسمك ثم بن واسم الأب… مثال: محمد بن علي"><kbd>بحث</kbd></div>
         <div class="metrics"><span><b id="peopleCount">٩٨٢</b> شخصًا</span><span><b id="generationCount">—</b> أجيال</span><span><b id="branchCount">٤</b> فروع رئيسية</span></div>
       </div>
 
@@ -39,29 +37,22 @@
       <div class="workspace radial-workspace">
         <aside class="sidepanel">
           <h2>طريقة الاستخدام</h2>
-          <p class="guide-line"><b>١</b> قرّب لتظهر أسماء أكثر</p>
-          <p class="guide-line"><b>٢</b> اسحب الشجرة للتحرك</p>
-          <p class="guide-line"><b>٣</b> اضغط الاسم لعرض الخيارات</p>
-          <button id="rootBtn" class="side-action">إظهار الشجرة كاملة</button>
+          <p class="guide-line"><b>١</b> اضغط الاسم لفتح أبنائه أو إغلاقهم</p>
+          <p class="guide-line"><b>٢</b> استخدم ⋮ لنسخ النسب أو إرسال طلب</p>
+          <p class="guide-line"><b>٣</b> بدّل طريقة العرض في أي وقت</p>
+          <button id="expandAllBtn" class="side-action">توسيع كامل الشجرة</button>
+          <button id="rootBtn" class="side-action">إغلاق جميع الفروع</button>
           <p class="privacy-note">المعلومات الخاصة بالأحياء لا تظهر للعامة.</p>
         </aside>
         <section class="tree-card">
           <div class="tree-toolbar">
-            <div id="breadcrumbs"><span class="status-dot"></span><span id="dataStatus">الشجرة كاملة</span></div>
-            <div class="zoom-tools"><button id="rootBtnMobile" title="إظهار الكل">⌂</button><button id="zoomOut" title="تصغير">−</button><span id="zoomLabel">١٠٠٪</span><button id="zoomIn" title="تكبير">＋</button></div>
+            <div id="breadcrumbs"><span class="status-dot"></span><span id="dataStatus">الفروع الرئيسية</span></div>
+            <div class="view-switch"><button class="active" data-tree-mode="radial">دائري</button><button data-tree-mode="classic">شجري</button></div>
+            <div class="zoom-tools"><button id="expandAllTop" class="wide-tool" title="توسيع كامل الشجرة">توسيع الكل</button><button id="rootBtnMobile" title="إغلاق الفروع">⌂</button><button id="zoomOut" title="تصغير">−</button><span id="zoomLabel">١٠٠٪</span><button id="zoomIn" title="تكبير">＋</button></div>
           </div>
           <div id="searchResults" class="search-results hidden"></div>
           <div id="treeCanvas"><div id="tree"></div></div>
         </section>
-      </div>
-    </section>
-
-    <section id="aboutView" class="view content-page">
-      <p class="eyebrow">عن المشروع</p><h1>سجل عائلي موثوق ومتجدد</h1>
-      <div class="feature-grid">
-        <article><b>عرض واضح</b><p>شجرة تفاعلية قابلة للبحث، مع طي الفروع وفتحها.</p></article>
-        <article><b>معلومات الأشخاص</b><p>الميلاد والوفاة والمنصب والمدينة والملاحظات، وفق الخصوصية.</p></article>
-        <article><b>مراجعة قبل النشر</b><p>كل مساهمة تبقى معلّقة ولا تظهر إلا بعد اعتماد المدير.</p></article>
       </div>
     </section>
 
@@ -80,11 +71,9 @@
 
   <div id="personMenu" class="person-menu hidden" role="menu">
     <header><b id="menuPersonName"></b><button id="closePersonMenu" aria-label="إغلاق">×</button></header>
-    <button id="viewPersonBtn">عرض المعلومات</button>
     <button id="copyLineageBtn">نسخ الاسم الكامل</button>
-    <button id="suggestMenuBtn">اقتراح تعديل</button>
     <button id="addChildMenuBtn">إضافة ابن</button>
-    <button id="noteMenuBtn">إضافة ملاحظة</button>
+    <button id="suggestMenuBtn">طلب تعديل</button>
   </div>
 
   <dialog id="loginDialog" class="modal">
@@ -111,9 +100,9 @@
     </form>
   </dialog>
 
-  <dialog id="accountDialog" class="modal"><button class="close" data-close="accountDialog">×</button><h2>حساب المساهم</h2><p id="accountInfo"></p><button id="logoutBtn" class="danger full">تسجيل الخروج</button></dialog>
+  <dialog id="accountDialog" class="modal"><button class="close" data-close="accountDialog">×</button><h2>حساب المساهم</h2><p id="accountInfo"></p><button id="reviewBtn" class="secondary full hidden" data-view="review">طلبات المراجعة <i id="pendingBadge">٠</i></button><button id="logoutBtn" class="danger full">تسجيل الخروج</button></dialog>
   <div id="toast" class="toast"></div>
-  <script src="seed-data.js?v=4"></script>
-  <script type="module" src="app.js?v=4"></script>
+  <script src="seed-data.js?v=5"></script>
+  <script type="module" src="app.js?v=5"></script>
 </body>
 </html>
