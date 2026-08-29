@@ -31,15 +31,15 @@ textarea {
   font: inherit;
 }
 .topbar {
-  min-height: 116px;
+  min-height: 104px;
   background: #fffdfaf2;
   border-bottom: 1px solid #ddd7c9;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas: "heading" "nav";
   align-items: center;
-  gap: 5px;
-  padding: 12px clamp(16px, 4vw, 60px) 0;
+  gap: 1px;
+  padding: 7px clamp(16px, 4vw, 60px) 0;
   position: sticky;
   top: 0;
   z-index: 20;
@@ -52,7 +52,7 @@ textarea {
   flex-direction: column;
   text-align: center;
   margin: 0;
-  gap: 1px;
+  gap: 0;
 }
 .family-heading b {
   font-size: clamp(20px, 3vw, 30px);
@@ -62,17 +62,18 @@ textarea {
 .family-heading small {
   margin-top: 0;
   font-size: 10px;
-  color: var(--gold);
+  color: #8d6b38;
+  line-height: 1.15;
 }
 .topbar nav {
   grid-area: nav;
   justify-content: center;
   width: min(760px, 100%);
   margin: 0 auto;
-  gap: 2px;
+  gap: 0;
   align-items: end;
-  background: #e9e4d9;
-  padding: 2px 2px 0;
+  background: #dcd6ca;
+  padding: 5px 5px 0;
 }
 .topbar > .primary {
   position: absolute;
@@ -90,18 +91,20 @@ textarea {
   align-items: center;
   line-height: 1.4;
   flex: 1;
-  min-height: 46px;
+  min-height: 43px;
   justify-content: center;
-  border-radius: 0;
-  border: 1px solid #ddd6c7;
+  border-radius: 11px 11px 0 0;
+  border: 0;
   border-bottom: 0;
   color: var(--green);
-  background: #e8e3d8;
+  background: transparent;
+  text-decoration: none !important;
+  font-size: 10px !important;
+  font-weight: 600;
 }
 .nav-choice.active {
   background: var(--cream);
-  border-color: var(--line);
-  box-shadow: 0 -4px 12px #17352b0a;
+  box-shadow: 0 -3px 10px #17352b13;
   position: relative;
   z-index: 2;
 }
@@ -115,6 +118,7 @@ textarea {
   background: var(--cream);
 }
 .nav-choice small {
+  display: block;
   font-size: 7px;
   font-weight: 500;
 }
@@ -249,6 +253,39 @@ nav {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-top: 18px;
+}
+.branch-numbers {
+  margin-top: 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+}
+.branch-numbers h2 {
+  color: var(--green);
+  font-size: 14px;
+  margin: 0 0 14px;
+}
+.branch-numbers > div {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+}
+.branch-numbers article {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: #f7f3e9;
+  border-radius: 12px;
+  padding: 14px 8px;
+}
+.branch-numbers b {
+  font-size: 12px;
+}
+.branch-numbers span {
+  color: var(--gold);
+  font-size: 10px;
 }
 .frequency-grid > article {
   background: var(--paper);
@@ -873,9 +910,9 @@ textarea:focus {
 }
 @media (max-width: 800px) {
   .topbar {
-    min-height: 116px;
+    min-height: 104px;
     height: auto;
-    padding: 10px 8px 0;
+    padding: 6px 8px 0;
     gap: 8px;
   }
   .family-heading small {
@@ -883,7 +920,7 @@ textarea:focus {
     font-size: 8px;
   }
   .family-heading b {
-    font-size: 21px;
+    font-size: 20px;
   }
   .topbar > .primary {
     font-size: 9px;
@@ -933,6 +970,9 @@ textarea:focus {
   }
   .frequency-grid {
     grid-template-columns: 1fr;
+  }
+  .branch-numbers > div {
+    grid-template-columns: 1fr 1fr;
   }
   .workspace {
     display: block;
