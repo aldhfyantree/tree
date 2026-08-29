@@ -20,6 +20,8 @@
 }
 .branch-strip .branch-btn small {
   font-size: 9px;
+  display: block;
+  margin-top: 3px;
 }
 .radial-workspace {
   grid-template-columns: 210px minmax(0, 1fr);
@@ -212,6 +214,23 @@
   color: var(--green);
 }
 @media (max-width: 800px) {
+  .branch-strip .branch-btn {
+    min-width: 132px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "dot name" "count count";
+    align-items: center;
+  }
+  .branch-strip .branch-dot {
+    grid-area: dot;
+  }
+  .branch-strip .branch-btn b {
+    grid-area: name;
+  }
+  .branch-strip .branch-btn small {
+    grid-area: count;
+    text-align: center;
+  }
   .hero {
     padding-bottom: 24px;
   }
