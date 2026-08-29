@@ -57,6 +57,7 @@ let people = window.SEED_PEOPLE || [],
   confirmation = null,
   zoom = 1,
   radialState = null,
+  classicState = null,
   selectedId = null,
   treeMode = "radial",
   expandedIds = new Set(),
@@ -146,12 +147,36 @@ function renderAll() {
   const root = roots[0],
     branches = root ? kids.get(root.id) || [] : [];
   $("#branchCount").textContent = ar(branches.length);
+  renderNameFrequency();
   $("#branches").innerHTML = branches
     .map(
       (p, i) =>
         `<button class="branch-btn branch-${i + 1}" data-branch="${p.id}"><span class="branch-dot"></span><b>${p.name}</b><small>${ar(countDesc(p.id, kids) + 1)} شخصًا</small></button>`,
     )
     .join("");
+}
+function renderNameFrequency() {
+  const names = new Map();
+  people.forEach((p) => {
+    const key = norm(p.name);
+    if (!key) return;
+    const item = names.get(key) || { name: p.name, count: 0 };
+    item.count++;
+    names.set(key, item);
+  });
+  const values = [...names.values()];
+  const most = [...values]
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "ar"))
+    .slice(0, 5);
+  const least = [...values]
+    .sort((a, b) => a.count - b.count || a.name.localeCompare(b.name, "ar"))
+    .slice(0, 5);
+  const draw = (items) =>
+    items
+      .map((x) => `<span><b>${esc(x.name)}</b><em>${ar(x.count)}</em></span>`)
+      .join("");
+  $("#mostNames").innerHTML = draw(most);
+  $("#leastNames").innerHTML = draw(least);
 }
 function countDesc(id, kids) {
   let n = 0;
@@ -235,8 +260,8 @@ function buildRadialData() {
   }
   branches.forEach(placeBranch);
   const maxDepth = Math.max(1, ...nodes.map((n) => n.depth)),
-    step = 86,
-    size = Math.max(1000, maxDepth * step * 2 + 240),
+    step = 60,
+    size = Math.max(760, maxDepth * step * 2 + 180),
     center = size / 2;
   const placed = nodes.map((p) => {
     const r = p.depth * step,
@@ -299,15 +324,43 @@ function renderRadialTree() {
 function renderClassicTree() {
   const { root, kids } = visibleTree();
   if (!root) return;
-  const node = (p) => {
-    const cs = expandedIds.has(p.id) ? kids.get(p.id) || [] : [],
-      hasKids = (kids.get(p.id) || []).length,
-      open = expandedIds.has(p.id);
-    return `<li class="classic-node"><div class="classic-card" data-node="${p.id}"><span class="classic-name">${p.id === root.id ? "ضفي" : esc(p.name)}</span>${hasKids ? `<span class="classic-toggle">${open ? "−" : "＋"}</span>` : ""}</div>${cs.length ? `<ul>${cs.map(node).join("")}</ul>` : ""}</li>`;
+  const hierarchy = d3.hierarchy(root, (p) =>
+    expandedIds.has(p.id) ? kids.get(p.id) || [] : [],
+  );
+  d3.tree().nodeSize([52, 142])(hierarchy);
+  const nodes = hierarchy.descendants(),
+    minX = Math.min(...nodes.map((n) => n.x)),
+    maxX = Math.max(...nodes.map((n) => n.x));
+  const width = Math.max(720, hierarchy.height * 142 + 220),
+    height = Math.max(560, maxX - minX + 150);
+  nodes.forEach((n) => {
+    n.px = width - 90 - n.depth * 142;
+    n.py = n.x - minX + 72;
+  });
+  classicState = {
+    width,
+    height,
+    nodeMap: new Map(nodes.map((n) => [n.data.id, n])),
   };
+  const links = hierarchy
+    .links()
+    .map(
+      ({ source, target }) =>
+        `<path class="classic-link family-link" data-link="${target.data.id}" d="M${source.px},${source.py} C${(source.px + target.px) / 2},${source.py} ${(source.px + target.px) / 2},${target.py} ${target.px},${target.py}"/>`,
+    )
+    .join("");
+  const cards = nodes
+    .map((n) => {
+      const p = n.data,
+        hasKids = (kids.get(p.id) || []).length,
+        open = expandedIds.has(p.id),
+        rootNode = p.id === root.id;
+      return `<g class="classic-person${rootNode ? " root-person" : ""}${open ? " is-open" : ""}" data-node="${p.id}" transform="translate(${n.px} ${n.py})"><rect class="classic-card-bg" x="-55" y="-18" width="110" height="36" rx="11"/><text class="classic-node-name" y="5" text-anchor="middle">${rootNode ? "ضفي" : esc(p.name)}</text>${hasKids ? `<circle class="branch-state" cx="47" cy="-13" r="8"/><text class="branch-state-mark" x="47" y="-9" text-anchor="middle">${open ? "−" : "+"}</text>` : ""}</g>`;
+    })
+    .join("");
   $("#treeCanvas").classList.add("classic-canvas");
   $("#tree").innerHTML =
-    `<div class="classic-tree"><ul>${node(root)}</ul></div>`;
+    `<svg id="classicSvg" viewBox="0 0 ${width} ${height}" role="img"><g id="classicGraph"><g>${links}</g><g>${cards}</g></g></svg>`;
   $("#zoomLabel").textContent = "١٠٠٪";
   bindClassicGestures();
   applyPathHighlight();
@@ -402,37 +455,27 @@ function bindRadialGestures() {
   d3.select(svg).call(zoomBehavior).on("dblclick.zoom", null);
 }
 function bindClassicGestures() {
-  const canvas = $("#treeCanvas"),
-    graph = $(".classic-tree");
-  if (!canvas || !graph || !window.d3) return;
+  const svg = $("#classicSvg");
+  if (!svg || !window.d3) return;
   zoomBehavior = d3
     .zoom()
     .scaleExtent([0.45, 2.5])
     .clickDistance(8)
     .on("zoom", (event) => {
-      d3.select(graph).style("transform", event.transform.toString());
+      d3.select("#classicGraph").attr("transform", event.transform);
       zoom = event.transform.k;
       $("#zoomLabel").textContent = `${ar(Math.round(zoom * 100))}٪`;
     });
-  d3.select(canvas).call(zoomBehavior).on("dblclick.zoom", null);
+  d3.select(svg).call(zoomBehavior).on("dblclick.zoom", null);
 }
 function focusClassic(id) {
-  const canvas = $("#treeCanvas"),
-    target = document.querySelector(`.classic-card[data-node="${id}"]`),
-    graph = $(".classic-tree");
-  if (!canvas || !target || !graph || !zoomBehavior) return;
-  const targetBox = target.getBoundingClientRect(),
-    graphBox = graph.getBoundingClientRect(),
-    x =
-      (targetBox.left - graphBox.left + targetBox.width / 2) /
-      Math.max(zoom, 0.01),
-    y =
-      (targetBox.top - graphBox.top + targetBox.height / 2) /
-      Math.max(zoom, 0.01);
-  d3.select(canvas)
+  const svg = $("#classicSvg"),
+    n = classicState?.nodeMap.get(id);
+  if (!svg || !n || !zoomBehavior) return;
+  d3.select(svg)
     .transition()
     .duration(260)
-    .call(zoomBehavior.translateTo, x, y);
+    .call(zoomBehavior.translateTo, n.px, n.py);
 }
 function fitTree() {
   if (treeMode === "radial") {
@@ -444,9 +487,9 @@ function fitTree() {
       .duration(220)
       .call(zoomBehavior.transform, d3.zoomIdentity);
   } else {
-    const canvas = $("#treeCanvas");
-    if (canvas && zoomBehavior)
-      d3.select(canvas)
+    const svg = $("#classicSvg");
+    if (svg && zoomBehavior)
+      d3.select(svg)
         .transition()
         .duration(220)
         .call(zoomBehavior.transform, d3.zoomIdentity);
@@ -512,7 +555,7 @@ $("#fitTreeBtn").onclick = fitTree;
 $("#zoomIn").onclick = () => buttonZoom(1.3);
 $("#zoomOut").onclick = () => buttonZoom(1 / 1.3);
 function buttonZoom(f) {
-  const svg = $("#familySvg");
+  const svg = treeMode === "radial" ? $("#familySvg") : $("#classicSvg");
   if (!svg || !zoomBehavior) return;
   d3.select(svg).transition().duration(160).call(zoomBehavior.scaleBy, f);
 }
@@ -521,7 +564,7 @@ $("#branches").onclick = (e) => {
   if (!b) return;
   expandedIds.add(b.dataset.branch);
   renderTree();
-  if (treeMode === "radial") selectPerson(b.dataset.branch, true);
+  selectPerson(b.dataset.branch, true);
 };
 $("#search").oninput = (e) => {
   const q = norm(e.target.value),
