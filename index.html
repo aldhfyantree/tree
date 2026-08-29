@@ -11,19 +11,22 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=5" />
+    <link rel="stylesheet" href="styles.css?v=7" />
     <link rel="stylesheet" href="mobile-fix.css?v=5" />
-    <link rel="stylesheet" href="radial.css?v=5" />
+    <link rel="stylesheet" href="radial.css?v=7" />
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#"
-        ><span class="brand-mark">الضفيان</span
-        ><span><b>شجرة الضفيان</b><small>سجل العائلة التفاعلي</small></span></a
+      <a class="brand family-heading" href="#"
+        ><b>شجرة عائلة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></a
       >
       <nav>
-        <button class="ghost active" data-view="tree">الشجرة التفاعلية</button>
-        <a class="ghost nav-link" href="pdf.html">الإصدار الأول</a>
+        <button class="ghost active nav-choice" data-view="tree">
+          <span>الشجرة بطريقة تفاعلية</span>
+        </button>
+        <a class="ghost nav-link nav-choice" href="pdf.html"
+          ><span>الشجرة المطبوعة</span><small>الإصدار الأول</small></a
+        >
       </nav>
       <button id="loginBtn" class="primary">تسجيل دخول</button>
       <button id="accountBtn" class="account hidden">
@@ -34,9 +37,9 @@
     <main>
       <section id="treeView" class="view active">
         <div class="hero">
-          <p class="eyebrow">إرثٌ يُحفظ، وصلةٌ لا تنقطع</p>
-          <h1>شجرة عائلة الضفيان</h1>
-          <p>افتح الفروع بالتدريج حتى تصل إلى اسمك، أو ابحث بتسلسل النسب.</p>
+          <p class="tree-intro">
+            افتح الفروع بالتدريج حتى تصل إلى اسمك، أو ابحث بتسلسل النسب.
+          </p>
           <div class="searchbox">
             <span>⌕</span
             ><input
@@ -50,6 +53,16 @@
             ><span><b id="generationCount">—</b> أجيال</span
             ><span><b id="branchCount">٤</b> فروع رئيسية</span>
           </div>
+          <section class="name-frequency" aria-label="تكرار الأسماء">
+            <div>
+              <h3>أكثر ٥ أسماء تكراراً</h3>
+              <div id="mostNames" class="name-chips"></div>
+            </div>
+            <div>
+              <h3>أقل ٥ أسماء تكراراً</h3>
+              <div id="leastNames" class="name-chips"></div>
+            </div>
+          </section>
         </div>
 
         <div class="branch-strip" id="branches"></div>
@@ -238,7 +251,7 @@
     </dialog>
     <div id="toast" class="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-    <script src="seed-data.js?v=6"></script>
-    <script type="module" src="app.js?v=6"></script>
+    <script src="seed-data.js?v=7"></script>
+    <script type="module" src="app.js?v=7"></script>
   </body>
 </html>
