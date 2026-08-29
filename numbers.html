@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#173f32" />
+    <title>العائلة بالأرقام — شجرة عائلة الضفيان</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=8" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand family-heading" href="index.html"
+        ><b>شجرة عائلة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></a
+      >
+      <nav>
+        <a class="ghost nav-link nav-choice" href="index.html"
+          ><span>الشجرة التفاعلية</span></a
+        >
+        <a class="ghost nav-link nav-choice" href="pdf.html"
+          ><span>الشجرة المطبوعة <small>(الإصدار الأول)</small></span></a
+        >
+        <a class="ghost nav-link nav-choice active" href="numbers.html"
+          ><span>العائلة بالأرقام</span></a
+        >
+      </nav>
+    </header>
+    <main class="numbers-page">
+      <section class="numbers-hero">
+        <p class="eyebrow">نظرة على العائلة</p>
+        <h1>العائلة بالأرقام</h1>
+        <p>ملخص مباشر مبني على الأسماء المسجلة في الشجرة.</p>
+      </section>
+      <section class="number-cards">
+        <article><b id="peopleCount">—</b><span>شخصاً</span></article>
+        <article><b id="generationCount">—</b><span>جيلاً</span></article>
+        <article><b id="branchCount">—</b><span>فروع رئيسية</span></article>
+        <article><b id="uniqueCount">—</b><span>اسماً مختلفاً</span></article>
+      </section>
+      <section class="frequency-grid">
+        <article>
+          <h2>أكثر ٥ أسماء تكراراً</h2>
+          <div id="mostNames" class="ranking-list"></div>
+        </article>
+        <article>
+          <h2>أقل ٥ أسماء تكراراً</h2>
+          <div id="leastNames" class="ranking-list"></div>
+        </article>
+      </section>
+    </main>
+    <script src="seed-data.js?v=7"></script>
+    <script src="numbers.js?v=1"></script>
+  </body>
+</html>
