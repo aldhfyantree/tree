@@ -677,7 +677,7 @@ async function loadAnalytics() {
         .sort((a, b) => b.count - a.count)
         .slice(0, 20);
     $("#analyticsSummary").innerHTML =
-      `<div class="analytics-cards"><article><b>${ar(pageMap.get("interactive_tree") || 0)}</b><span>زيارة للشجرة التفاعلية</span></article><article><b>${ar(pageMap.get("first_edition") || 0)}</b><span>زيارة للإصدار الأول</span></article></div><h2>أكثر الأسماء نسخًا</h2>${top.length ? `<div class="analytics-list">${top.map((x, i) => `<div><span>${ar(i + 1)}. ${esc(map.has(x.id) ? lineage(map.get(x.id)) : x.id)}</span><b>${ar(x.count)}</b></div>`).join("")}</div>` : '<p class="empty">لا توجد عمليات نسخ مسجلة بعد.</p>'}`;
+      `<div class="analytics-cards"><article><b>${ar(pageMap.get("interactive_tree") || 0)}</b><span>زيارة للشجرة التفاعلية</span></article><article><b>${ar(pageMap.get("first_edition") || 0)}</b><span>زيارة للشجرة المطبوعة</span></article><article><b>${ar(pageMap.get("family_numbers") || 0)}</b><span>زيارة للعائلة بالأرقام</span></article></div><h2>الأسماء التي تم نسخها</h2>${top.length ? `<div class="analytics-list">${top.map((x, i) => `<div><span>${ar(i + 1)}. ${esc(map.has(x.id) ? lineage(map.get(x.id)) : x.id)}</span><b>${ar(x.count)}</b></div>`).join("")}</div>` : '<p class="empty">لا توجد عمليات نسخ مسجلة بعد.</p>'}`;
   } catch (error) {
     $("#analyticsSummary").innerHTML =
       '<p class="empty">تعذر تحميل الإحصائيات.</p>';
@@ -738,7 +738,7 @@ onAuthStateChanged(auth, async (u) => {
     $("#loginBtn").classList.remove("hidden");
     $("#accountBtn").classList.add("hidden");
     $("#reviewBtn")?.classList.add("hidden");
-    $("#adminTopBtn")?.classList.add("hidden");
+    $("#adminNav")?.classList.add("hidden");
     return;
   }
   $("#loginBtn").classList.add("hidden");
@@ -751,8 +751,9 @@ onAuthStateChanged(auth, async (u) => {
   } else userProfile = { name: "مدير الشجرة", relation: "المدير" };
   $("#accountName").textContent = userProfile?.name || "حسابي";
   if (isAdmin()) {
+    await u.getIdToken(true);
     $("#reviewBtn")?.classList.remove("hidden");
-    $("#adminTopBtn")?.classList.remove("hidden");
+    $("#adminNav")?.classList.remove("hidden");
     $("#seedBtn").classList.toggle("hidden", remoteLoaded);
     await updatePendingBadge();
     if (new URLSearchParams(location.search).get("review") === "1")
@@ -815,6 +816,7 @@ $("#requestForm").onsubmit = async (e) => {
     type,
     personId: currentPerson.id,
     personName: currentPerson.name,
+    personLineage: lineage(currentPerson),
     proposed,
     reason: $("#requestReason").value.trim(),
     submittedBy: auth.currentUser.uid,
@@ -848,8 +850,14 @@ async function loadRequests() {
   }
   list.innerHTML = s.docs
     .map((x) => {
-      const r = x.data();
-      return `<article class="review-card" data-request="${x.id}"><header><div><b>${r.type === "addChild" ? "إضافة ابن" : "تعديل معلومات"} — ${r.personName}</b><small>${r.submittedName || "مساهم"} · <span dir="ltr">${r.submittedPhone}</span> · ${r.submittedRelation || ""}</small></div></header><div class="diff">${Object.entries(
+      const r = x.data(),
+        target = byId().get(r.personId),
+        fullName = r.personLineage || (target ? lineage(target) : r.personName),
+        requestLabel =
+          r.type === "addChild"
+            ? `إضافة الابن: ${r.proposed?.name || "—"}`
+            : "تعديل معلومات";
+      return `<article class="review-card" data-request="${x.id}"><header><div><b>${requestLabel}</b><strong class="request-target">${r.type === "addChild" ? "اسم الأب الكامل" : "الاسم الكامل"}: ${esc(fullName)}</strong><small>${r.submittedName || "مساهم"} · <span dir="ltr">${r.submittedPhone}</span> · ${r.submittedRelation || ""}</small></div></header><div class="diff">${Object.entries(
         r.proposed || {},
       )
         .filter(([k]) => !["id", "parent"].includes(k))
