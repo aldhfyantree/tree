@@ -34,16 +34,14 @@ if (location.pathname.endsWith("numbers.html"))
   ).catch(() => {});
 onAuthStateChanged(getAuth(app), (user) => {
   if (!button) return;
-  document.querySelector("#adminNav")?.classList.add("hidden");
   if (!user) {
     button.textContent = "تسجيل دخول";
     button.href = "index.html?login=1";
     return;
   }
   if (admins.includes(user.phoneNumber)) {
-    button.textContent = "حسابي";
-    button.href = "index.html";
-    document.querySelector("#adminNav")?.classList.remove("hidden");
+    button.textContent = "الإدارة";
+    button.href = "index.html?review=1";
   } else {
     button.textContent = "حسابي";
     button.href = "index.html";
