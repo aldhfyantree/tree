@@ -738,7 +738,7 @@ onAuthStateChanged(auth, async (u) => {
     $("#loginBtn").classList.remove("hidden");
     $("#accountBtn").classList.add("hidden");
     $("#reviewBtn")?.classList.add("hidden");
-    $("#adminNav")?.classList.add("hidden");
+    $("#adminTopBtn")?.classList.add("hidden");
     return;
   }
   $("#loginBtn").classList.add("hidden");
@@ -753,7 +753,7 @@ onAuthStateChanged(auth, async (u) => {
   if (isAdmin()) {
     await u.getIdToken(true);
     $("#reviewBtn")?.classList.remove("hidden");
-    $("#adminNav")?.classList.remove("hidden");
+    $("#adminTopBtn")?.classList.remove("hidden");
     $("#seedBtn").classList.toggle("hidden", remoteLoaded);
     await updatePendingBadge();
     if (new URLSearchParams(location.search).get("review") === "1")
