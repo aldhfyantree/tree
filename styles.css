@@ -32,8 +32,8 @@ textarea {
 }
 .topbar {
   min-height: 104px;
-  background: #fffdfa;
-  border-bottom: 1px solid #ddd7c9;
+  background: #e5eee8;
+  border-bottom: 1px solid #c4d3c9;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas: "heading" "nav";
