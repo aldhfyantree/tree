@@ -104,7 +104,7 @@ textarea {
   border: 0;
   border-bottom: 0;
   color: #31453b;
-  background: #cbc1ae;
+  background: #c9bfad;
   text-decoration: none !important;
   font-size: 10px !important;
   font-weight: 600;
@@ -113,7 +113,7 @@ textarea {
   display: none !important;
 }
 .nav-choice.active {
-  background: #fffdf8;
+  background: var(--cream);
   color: #123e2f;
   box-shadow: 0 -3px 10px #17352b13;
   position: relative;
@@ -126,7 +126,7 @@ textarea {
   left: 0;
   bottom: -3px;
   height: 4px;
-  background: #fffdf8;
+  background: var(--cream);
 }
 .nav-choice small {
   display: block;
