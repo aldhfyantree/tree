@@ -85,6 +85,13 @@ textarea {
   left: 14px;
   top: 12px;
 }
+.admin-top {
+  position: absolute !important;
+  left: 58px !important;
+  top: 11px !important;
+  font-size: 9px;
+  padding: 7px 9px;
+}
 .nav-choice {
   display: flex !important;
   flex-direction: column;
