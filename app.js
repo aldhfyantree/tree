@@ -409,9 +409,13 @@ function ancestorIds(id) {
 }
 function applyPathHighlight() {
   const path = new Set(ancestorIds(selectedId));
+  const directChildren = new Set(
+    selectedId ? (childrenMap().get(selectedId) || []).map((p) => p.id) : [],
+  );
   $$("[data-node]").forEach((n) => {
     n.classList.toggle("selected", n.dataset.node === selectedId);
     n.classList.toggle("path-node", path.has(n.dataset.node));
+    n.classList.toggle("direct-child", directChildren.has(n.dataset.node));
   });
   $$(".family-link").forEach((l) =>
     l.classList.toggle("path-active", path.has(l.dataset.link)),

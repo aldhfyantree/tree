@@ -103,8 +103,8 @@ textarea {
   border-radius: 11px 11px 0 0;
   border: 0;
   border-bottom: 0;
-  color: #31453b;
-  background: #c9bfad;
+  color: #fffdf8;
+  background: #8d6b38;
   text-decoration: none !important;
   font-size: 10px !important;
   font-weight: 600;
@@ -132,6 +132,7 @@ textarea {
   display: block;
   font-size: 7px;
   font-weight: 500;
+  color: inherit;
 }
 .brand {
   display: flex;
