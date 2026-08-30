@@ -317,12 +317,12 @@
   font-weight: 700;
 }
 .radial-person.direct-child:not(.selected):not(.path-node) .person-card-bg {
-  fill: #f6ead2;
-  stroke: #b8893d;
+  fill: #e8f0e6;
+  stroke: #73947d;
   stroke-width: 2;
 }
 .radial-person.direct-child:not(.selected):not(.path-node) .node-name {
-  fill: #76541e;
+  fill: #315d48;
   font-weight: 700;
 }
 .radial-person.selected .person-card-bg {
@@ -333,6 +333,9 @@
 .root-person.path-node .person-card-bg {
   fill: var(--green);
   stroke: var(--green);
+}
+.root-person.path-node .node-name {
+  fill: #fff;
 }
 .branch-state {
   fill: var(--gold);
@@ -476,12 +479,12 @@
   fill: var(--green);
 }
 .classic-person.direct-child:not(.selected):not(.path-node) .classic-card-bg {
-  fill: #f6ead2;
-  stroke: #b8893d;
+  fill: #e8f0e6;
+  stroke: #73947d;
   stroke-width: 2;
 }
 .classic-person.direct-child:not(.selected):not(.path-node) .classic-node-name {
-  fill: #76541e;
+  fill: #315d48;
 }
 .classic-person.selected .classic-card-bg {
   fill: #dcecdf;
@@ -557,9 +560,9 @@
   color: var(--green);
 }
 .classic-card.direct-child:not(.selected):not(.path-node) {
-  background: #f6ead2;
-  border-color: #b8893d;
-  color: #76541e;
+  background: #e8f0e6;
+  border-color: #73947d;
+  color: #315d48;
 }
 .classic-card.selected {
   background: #dcecdf;
