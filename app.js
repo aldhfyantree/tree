@@ -341,6 +341,7 @@ function renderRadialTree() {
   zoom = 1;
   updateRadialVisibility();
   bindRadialGestures();
+  applyPathHighlight();
   $("#zoomLabel").textContent = "١٠٠٪";
 }
 function renderClassicTree() {
