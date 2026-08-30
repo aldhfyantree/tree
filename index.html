@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=11" />
+    <link rel="stylesheet" href="styles.css?v=12" />
     <link rel="stylesheet" href="mobile-fix.css?v=5" />
     <link rel="stylesheet" href="radial.css?v=9" />
   </head>
@@ -30,15 +30,15 @@
         <a class="ghost nav-link nav-choice" href="numbers.html"
           ><span>العائلة بالأرقام</span></a
         >
-        <button
-          id="adminNav"
-          class="ghost nav-choice hidden"
-          data-view="review"
-        >
-          <span>الإدارة</span>
-        </button>
       </nav>
       <button id="loginBtn" class="primary">تسجيل دخول</button>
+      <button
+        id="adminTopBtn"
+        class="primary admin-top hidden"
+        data-view="review"
+      >
+        الإدارة
+      </button>
       <button id="accountBtn" class="account hidden">
         <span id="accountInitial">ع</span><span id="accountName">حسابي</span>
       </button>
@@ -247,6 +247,6 @@
     <div id="toast" class="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="seed-data.js?v=7"></script>
-    <script type="module" src="app.js?v=11"></script>
+    <script type="module" src="app.js?v=12"></script>
   </body>
 </html>
