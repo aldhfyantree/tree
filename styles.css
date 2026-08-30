@@ -103,8 +103,8 @@ textarea {
   border-radius: 11px 11px 0 0;
   border: 0;
   border-bottom: 0;
-  color: #fffdf8;
-  background: #8d6b38;
+  color: #fffdf8 !important;
+  background: #8d6b38 !important;
   text-decoration: none !important;
   font-size: 10px !important;
   font-weight: 600;
@@ -113,8 +113,8 @@ textarea {
   display: none !important;
 }
 .nav-choice.active {
-  background: var(--cream);
-  color: #123e2f;
+  background: var(--cream) !important;
+  color: #123e2f !important;
   box-shadow: 0 -3px 10px #17352b13;
   position: relative;
   z-index: 2;
