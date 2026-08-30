@@ -5,13 +5,29 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#173f32" />
     <title>شجرة الضفيان</title>
+    <meta name="description" content="شجرة الضفيان — إرثٌ يُحفظ، وصلةٌ لا تنقطع. استعرض شجرة العائلة التفاعلية والإصدار المطبوع." />
+    <link rel="canonical" href="https://aldhfyantree-f3273.web.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:site_name" content="شجرة الضفيان" />
+    <meta property="og:title" content="شجرة الضفيان" />
+    <meta property="og:description" content="إرثٌ يُحفظ، وصلةٌ لا تنقطع. الشجرة التفاعلية والمطبوعة لعائلة الضفيان." />
+    <meta property="og:url" content="https://aldhfyantree-f3273.web.app/" />
+    <meta property="og:image" content="https://aldhfyantree-f3273.web.app/social-preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="شجرة الضفيان" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="شجرة الضفيان" />
+    <meta name="twitter:description" content="إرثٌ يُحفظ، وصلةٌ لا تنقطع." />
+    <meta name="twitter:image" content="https://aldhfyantree-f3273.web.app/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=11" />
+    <link rel="stylesheet" href="styles.css?v=13" />
     <link rel="stylesheet" href="mobile-fix.css?v=5" />
     <link rel="stylesheet" href="radial.css?v=9" />
   </head>
@@ -30,15 +46,15 @@
         <a class="ghost nav-link nav-choice" href="numbers.html"
           ><span>العائلة بالأرقام</span></a
         >
-        <button
-          id="adminNav"
-          class="ghost nav-choice hidden"
-          data-view="review"
-        >
-          <span>الإدارة</span>
-        </button>
       </nav>
       <button id="loginBtn" class="primary">تسجيل دخول</button>
+      <button
+        id="adminTopBtn"
+        class="primary admin-top hidden"
+        data-view="review"
+      >
+        الإدارة
+      </button>
       <button id="accountBtn" class="account hidden">
         <span id="accountInitial">ع</span><span id="accountName">حسابي</span>
       </button>
@@ -247,6 +263,6 @@
     <div id="toast" class="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="seed-data.js?v=7"></script>
-    <script type="module" src="app.js?v=11"></script>
+    <script type="module" src="app.js?v=12"></script>
   </body>
 </html>
