@@ -4,7 +4,8 @@
   --green2: #477466;
   --gold: #cba135;
   --copper: #be7c4d;
-  --cream: #edf6f9;
+  --page-bg: #edf6f9;
+  --cream: var(--page-bg);
   --paper: #ffffff;
   --line: #b9cec7;
   --muted: #5c5368;
@@ -19,7 +20,7 @@ html {
 }
 body {
   margin: 0;
-  background: var(--cream);
+  background: var(--page-bg);
   color: var(--ink);
   font-family: "Noto Kufi Arabic", Tahoma, sans-serif;
 }
@@ -33,7 +34,7 @@ textarea {
 }
 .topbar {
   min-height: 104px;
-  background: var(--copper);
+  background: var(--gold);
   border-bottom: 1px solid #ffffff1f;
   display: grid;
   grid-template-columns: 1fr;
@@ -63,7 +64,7 @@ textarea {
 .family-heading small {
   margin-top: -5px;
   font-size: 10px;
-  color: var(--gold);
+  color: var(--ink);
   line-height: 1;
 }
 .topbar nav {
@@ -115,7 +116,7 @@ textarea {
   display: none !important;
 }
 .nav-choice.active {
-  background: var(--cream) !important;
+  background: var(--page-bg) !important;
   color: var(--ink) !important;
   box-shadow: 0 -5px 14px #00000042;
   position: relative;
@@ -128,7 +129,7 @@ textarea {
   left: 0;
   bottom: -3px;
   height: 4px;
-  background: var(--cream);
+  background: var(--page-bg);
 }
 .nav-choice small {
   display: block;
@@ -187,6 +188,21 @@ textarea {
 }
 .header-icon:hover {
   background: #ffffff24;
+}
+.share-svg {
+  width: 19px;
+  height: 19px;
+  overflow: visible;
+}
+.share-svg circle {
+  fill: currentColor;
+  stroke: none;
+}
+.share-svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 nav {
   display: flex;
@@ -437,7 +453,7 @@ nav {
 .hero {
   text-align: center;
   padding: 8px 20px;
-  background: var(--cream);
+  background: var(--page-bg);
 }
 .eyebrow {
   color: var(--gold);

@@ -21,8 +21,8 @@
         toast.classList.add("show");
         setTimeout(() => toast.classList.remove("show"), 2600);
       } else {
-        button.textContent = "✓";
-        setTimeout(() => (button.textContent = "↗"), 1600);
+        button.classList.add("share-done");
+        setTimeout(() => button.classList.remove("share-done"), 1600);
       }
     });
   });
