@@ -64,11 +64,11 @@ draw(
   "#mostNames",
   [...values]
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "ar"))
-    .slice(0, 5),
+    .slice(0, 10),
 );
 draw(
   "#leastNames",
   [...values]
     .sort((a, b) => a.count - b.count || a.name.localeCompare(b.name, "ar"))
-    .slice(0, 5),
+    .slice(0, 10),
 );

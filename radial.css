@@ -55,9 +55,9 @@
   min-height: 650px;
   background: radial-gradient(
     circle at center,
-    #fffdf8 0,
-    #fbf8ef 53%,
-    #f1ecdf 100%
+    #ffffff 0,
+    #edf6f9 58%,
+    #dcebe8 100%
   );
   overflow: hidden;
   touch-action: none;
@@ -80,7 +80,7 @@
 }
 .family-link {
   fill: none;
-  stroke: #c9c1ad;
+  stroke: #9bbab0;
   stroke-width: 1.6;
   opacity: 0.82;
   transition: 0.2s;
@@ -301,14 +301,14 @@
   font-size: 16px;
 }
 .main-branch .person-card-bg {
-  fill: #f5ead4;
+  fill: #cba1352b;
   stroke: var(--gold);
 }
 .main-branch .node-name {
   font-size: 14px;
 }
 .radial-person.path-node .person-card-bg {
-  fill: #e7f1e9;
+  fill: #5b8e7d24;
   stroke: var(--green);
   stroke-width: 2.5;
 }
@@ -317,16 +317,16 @@
   font-weight: 700;
 }
 .radial-person.direct-child:not(.selected):not(.path-node) .person-card-bg {
-  fill: #e8f0e6;
-  stroke: #73947d;
+  fill: #be7c4d1f;
+  stroke: var(--copper);
   stroke-width: 2;
 }
 .radial-person.direct-child:not(.selected):not(.path-node) .node-name {
-  fill: #315d48;
+  fill: var(--copper);
   font-weight: 700;
 }
 .radial-person.selected .person-card-bg {
-  fill: #dcecdf;
+  fill: #5b8e7d35;
   stroke: var(--green);
   stroke-width: 4;
 }
@@ -423,7 +423,7 @@
 }
 .person-action-buttons {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 7px;
   flex: 1;
 }
@@ -472,22 +472,22 @@
   pointer-events: none;
 }
 .classic-person.path-node .classic-card-bg {
-  fill: #e7f1e9;
+  fill: #5b8e7d24;
   stroke: var(--green);
 }
 .classic-person.path-node .classic-node-name {
   fill: var(--green);
 }
 .classic-person.direct-child:not(.selected):not(.path-node) .classic-card-bg {
-  fill: #e8f0e6;
-  stroke: #73947d;
+  fill: #be7c4d1f;
+  stroke: var(--copper);
   stroke-width: 2;
 }
 .classic-person.direct-child:not(.selected):not(.path-node) .classic-node-name {
-  fill: #315d48;
+  fill: var(--copper);
 }
 .classic-person.selected .classic-card-bg {
-  fill: #dcecdf;
+  fill: #5b8e7d35;
   stroke: var(--green);
   stroke-width: 3;
 }
@@ -614,7 +614,7 @@
   }
   .topbar nav {
     display: flex;
-    gap: 0;
+    gap: 8px;
   }
   .topbar nav .ghost {
     font-size: 9px;
@@ -636,5 +636,8 @@
   .person-action-buttons button {
     min-height: 46px;
     font-size: 9px;
+  }
+  .person-action-buttons {
+    grid-template-columns: 1fr 1fr;
   }
 }

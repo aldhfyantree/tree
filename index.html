@@ -27,12 +27,16 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=16" />
+    <link rel="stylesheet" href="styles.css?v=17" />
     <link rel="stylesheet" href="mobile-fix.css?v=5" />
     <link rel="stylesheet" href="radial.css?v=11" />
   </head>
   <body>
     <header class="topbar">
+      <div class="header-actions">
+        <button id="helpBtn" class="header-icon" type="button" aria-label="طريقة الاستخدام" title="طريقة الاستخدام">؟</button>
+        <button class="header-icon" type="button" data-share-page aria-label="مشاركة الموقع" title="مشاركة الموقع">↗</button>
+      </div>
       <a class="brand family-heading" href="#"
         ><b>شجرة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></a
       >
@@ -145,6 +149,29 @@
       </section>
     </main>
 
+    <dialog id="welcomeGuide" class="modal guide-dialog" aria-labelledby="guideTitle">
+      <button class="close" type="button" data-guide-close aria-label="إغلاق">×</button>
+      <p class="eyebrow">مرحباً بك</p>
+      <h2 id="guideTitle">اختر طريقة عرض الشجرة</h2>
+      <p class="muted">يمكنك التبديل بين العرضين في أي وقت.</p>
+      <div class="guide-view-options">
+        <button type="button" class="guide-view active" data-guide-mode="radial">
+          <span class="guide-view-icon" aria-hidden="true">◎</span>
+          <b>العرض الدائري</b><small>الفروع حول أصل العائلة</small>
+        </button>
+        <button type="button" class="guide-view" data-guide-mode="classic">
+          <span class="guide-view-icon" aria-hidden="true">⌘</span>
+          <b>العرض الشجري</b><small>الأجيال على شكل مستويات</small>
+        </button>
+      </div>
+      <div class="guide-features">
+        <span><i>☝</i>اضغط الاسم لفتح فروعه</span>
+        <span><i>⌕</i>ابحث عن أي اسم</span>
+        <span><i>⋮</i>انسخ أو أضف أو اقترح تعديلاً</span>
+      </div>
+      <button id="guideStartBtn" type="button" class="primary full">ابدأ الاستعراض</button>
+    </dialog>
+
     <dialog id="personDialog" class="sheet">
       <button class="close" data-close="personDialog">×</button>
       <div class="profile-head">
@@ -174,6 +201,7 @@
       </header>
       <div class="person-action-buttons">
         <button id="copyLineageBtn">نسخ الاسم الكامل</button
+        ><button id="sharePersonBtn">مشاركة هذا الاسم</button
         ><button id="addChildMenuBtn">إضافة ابن</button
         ><button id="suggestMenuBtn">طلب تعديل</button>
       </div>
@@ -263,6 +291,7 @@
     <div id="toast" class="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="seed-data.js?v=7"></script>
-    <script type="module" src="app.js?v=14"></script>
+    <script src="site-actions.js?v=1"></script>
+    <script type="module" src="app.js?v=15"></script>
   </body>
 </html>

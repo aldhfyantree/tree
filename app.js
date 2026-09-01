@@ -62,6 +62,7 @@ let people = window.SEED_PEOPLE || [],
   treeMode = "radial",
   expandedIds = new Set(),
   zoomBehavior = null;
+let sharedPersonOpened = false;
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
 const ar = (n) => Number(n).toLocaleString("ar-SA");
@@ -136,6 +137,7 @@ async function loadPeople() {
     console.warn(e);
   }
   renderAll();
+  openSharedPerson();
 }
 function renderAll() {
   if ($("#peopleCount")) $("#peopleCount").textContent = ar(people.length);
@@ -175,10 +177,10 @@ function renderNameFrequency() {
   const values = [...names.values()];
   const most = [...values]
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "ar"))
-    .slice(0, 5);
+    .slice(0, 10);
   const least = [...values]
     .sort((a, b) => a.count - b.count || a.name.localeCompare(b.name, "ar"))
-    .slice(0, 5);
+    .slice(0, 10);
   const draw = (items) =>
     items
       .map((x) => `<span><b>${esc(x.name)}</b><em>${ar(x.count)}</em></span>`)
@@ -667,6 +669,58 @@ $("#copyLineageBtn").onclick = async () => {
     });
   toast("تم نسخ الاسم الكامل");
 };
+$("#sharePersonBtn").onclick = async () => {
+  if (!currentPerson) return;
+  const url = new URL("index.html", location.href);
+  url.searchParams.set("person", currentPerson.id);
+  url.searchParams.set("mode", treeMode);
+  const title = lineage(currentPerson);
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, text: `من شجرة الضفيان: ${title}`, url: url.href });
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+    }
+  }
+  await navigator.clipboard.writeText(url.href);
+  toast("تم نسخ رابط الاسم");
+};
+
+function openSharedPerson() {
+  if (sharedPersonOpened) return;
+  const params = new URLSearchParams(location.search),
+    id = params.get("person"),
+    mode = params.get("mode");
+  if (!id || !byId().has(id)) return;
+  sharedPersonOpened = true;
+  if (["radial", "classic"].includes(mode)) treeMode = mode;
+  $$('[data-tree-mode]').forEach((button) =>
+    button.classList.toggle("active", button.dataset.treeMode === treeMode),
+  );
+  ancestorIds(id).forEach((ancestorId) => expandedIds.add(ancestorId));
+  renderTree();
+  requestAnimationFrame(() => selectPerson(id, true));
+}
+
+const guideKey = "dhafyan-guide-seen-v1";
+function closeGuide() {
+  localStorage.setItem(guideKey, "1");
+  $("#welcomeGuide")?.close();
+}
+$("#helpBtn").onclick = () => $("#welcomeGuide").showModal();
+$$('[data-guide-close]').forEach((button) => (button.onclick = closeGuide));
+$("#guideStartBtn").onclick = closeGuide;
+$$('[data-guide-mode]').forEach((button) => {
+  button.onclick = () => {
+    treeMode = button.dataset.guideMode;
+    $$('[data-guide-mode]').forEach((item) => item.classList.toggle("active", item === button));
+    $$('[data-tree-mode]').forEach((item) => item.classList.toggle("active", item.dataset.treeMode === treeMode));
+    renderTree();
+  };
+});
+if (!localStorage.getItem(guideKey))
+  setTimeout(() => $("#welcomeGuide")?.showModal(), 450);
 
 async function loadAnalytics() {
   if (!isAdmin()) return;

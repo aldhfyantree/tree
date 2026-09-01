@@ -1,14 +1,15 @@
 :root {
-  --ink: #17352b;
-  --green: #214f3e;
-  --green2: #2e6b52;
-  --gold: #b8893d;
-  --cream: #f6f2e8;
-  --paper: #fffdf8;
-  --line: #d9d3c4;
-  --muted: #526159;
+  --ink: #160c28;
+  --green: #5b8e7d;
+  --green2: #477466;
+  --gold: #cba135;
+  --copper: #be7c4d;
+  --cream: #edf6f9;
+  --paper: #ffffff;
+  --line: #b9cec7;
+  --muted: #5c5368;
   --danger: #a33b32;
-  --shadow: 0 18px 55px #17352b12;
+  --shadow: 0 18px 55px #160c2817;
 }
 * {
   box-sizing: border-box;
@@ -32,13 +33,13 @@ textarea {
 }
 .topbar {
   min-height: 104px;
-  background: #e5eee8;
-  border-bottom: 1px solid #c4d3c9;
+  background: var(--ink);
+  border-bottom: 1px solid #ffffff1f;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas: "heading" "nav";
   align-items: center;
-  gap: 1px;
+  gap: 0;
   padding: 7px clamp(16px, 4vw, 60px) 0;
   position: sticky;
   top: 0;
@@ -56,21 +57,21 @@ textarea {
 }
 .family-heading b {
   font-size: clamp(20px, 3vw, 30px);
-  color: var(--green);
-  line-height: 1.35;
+  color: var(--cream);
+  line-height: 1.05;
 }
 .family-heading small {
-  margin-top: 0;
+  margin-top: -5px;
   font-size: 10px;
-  color: #8d6b38;
-  line-height: 1.15;
+  color: var(--gold);
+  line-height: 1;
 }
 .topbar nav {
   grid-area: nav;
   justify-content: center;
   width: min(760px, 100%);
   margin: 0 auto;
-  gap: 0;
+  gap: 8px;
   align-items: end;
   background: transparent;
   padding: 5px 0 0;
@@ -103,19 +104,20 @@ textarea {
   border-radius: 11px 11px 0 0;
   border: 0;
   border-bottom: 0;
-  color: #fffdf8 !important;
-  background: #8d6b38 !important;
+  color: #ffffff !important;
+  background: var(--green) !important;
   text-decoration: none !important;
   font-size: 10px !important;
   font-weight: 600;
+  box-shadow: 0 -2px 9px #0000002b, inset 0 1px #ffffff24;
 }
 .branch-strip[hidden] {
   display: none !important;
 }
 .nav-choice.active {
   background: var(--cream) !important;
-  color: #123e2f !important;
-  box-shadow: 0 -3px 10px #17352b13;
+  color: var(--ink) !important;
+  box-shadow: 0 -5px 14px #00000042;
   position: relative;
   z-index: 2;
 }
@@ -162,6 +164,29 @@ textarea {
 .brand small {
   font-size: 10px;
   color: var(--muted);
+}
+.header-actions {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  display: flex;
+  gap: 7px;
+}
+.header-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff42;
+  border-radius: 50%;
+  background: #ffffff12;
+  color: var(--cream);
+  font-weight: 700;
+  cursor: pointer;
+}
+.header-icon:hover {
+  background: #ffffff24;
 }
 nav {
   display: flex;
@@ -224,6 +249,9 @@ nav {
   max-width: 1100px;
   margin: auto;
   padding: 34px 20px 70px;
+}
+.numbers-page > .number-cards:first-child {
+  margin-bottom: 18px;
 }
 .numbers-hero {
   text-align: center;
@@ -819,6 +847,73 @@ dialog::backdrop {
   width: min(620px, calc(100% - 24px));
   padding: 28px;
 }
+.guide-dialog {
+  width: min(620px, calc(100% - 24px));
+  text-align: center;
+}
+.guide-dialog h2 {
+  margin: 2px 0 4px;
+  color: var(--ink);
+}
+.guide-view-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 22px 0 16px;
+}
+.guide-view {
+  min-height: 150px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: var(--cream);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.guide-view.active {
+  border-color: var(--green);
+  background: #5b8e7d1c;
+  box-shadow: 0 8px 24px #160c2814;
+}
+.guide-view-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 33px;
+}
+.guide-view b {
+  font-size: 13px;
+}
+.guide-view small {
+  color: var(--muted);
+  font-size: 9px;
+}
+.guide-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.guide-features span {
+  padding: 10px 6px;
+  border-radius: 11px;
+  background: var(--cream);
+  color: var(--muted);
+  font-size: 9px;
+}
+.guide-features i {
+  display: block;
+  color: var(--copper);
+  font-size: 20px;
+  font-style: normal;
+}
 .close {
   position: absolute;
   left: 16px;
@@ -944,6 +1039,15 @@ textarea:focus {
   .family-heading b {
     font-size: 20px;
   }
+  .header-actions {
+    right: 8px;
+    top: 8px;
+    gap: 4px;
+  }
+  .header-icon {
+    width: 30px;
+    height: 30px;
+  }
   .topbar > .primary {
     font-size: 9px;
     left: 8px;
@@ -991,6 +1095,15 @@ textarea:focus {
     font-size: 25px;
   }
   .frequency-grid {
+    grid-template-columns: 1fr;
+  }
+  .guide-view-options {
+    gap: 8px;
+  }
+  .guide-view {
+    min-height: 130px;
+  }
+  .guide-features {
     grid-template-columns: 1fr;
   }
   .branch-numbers > div {

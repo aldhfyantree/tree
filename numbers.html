@@ -26,10 +26,11 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=16" />
+    <link rel="stylesheet" href="styles.css?v=17" />
   </head>
   <body>
     <header class="topbar">
+      <div class="header-actions"><button class="header-icon" type="button" data-share-page aria-label="مشاركة الموقع" title="مشاركة الموقع">↗</button></div>
       <a class="brand family-heading" href="index.html"
         ><b>شجرة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></a
       >
@@ -49,24 +50,24 @@
       >
     </header>
     <main class="numbers-page">
-      <section class="numbers-hero">
-        <p class="eyebrow">نظرة على العائلة</p>
-        <h1>العائلة بالأرقام</h1>
-        <p>ملخص مباشر مبني على الأسماء المسجلة في الشجرة.</p>
-      </section>
       <section class="number-cards">
         <article><b id="peopleCount">—</b><span>شخصاً</span></article>
         <article><b id="generationCount">—</b><span>جيلاً</span></article>
         <article><b id="branchCount">—</b><span>فروع رئيسية</span></article>
         <article><b id="uniqueCount">—</b><span>اسماً مختلفاً</span></article>
       </section>
+      <section class="numbers-hero">
+        <p class="eyebrow">نظرة على العائلة</p>
+        <h1>العائلة بالأرقام</h1>
+        <p>ملخص مباشر مبني على الأسماء المسجلة في الشجرة.</p>
+      </section>
       <section class="frequency-grid">
         <article>
-          <h2>أكثر ٥ أسماء تكراراً</h2>
+          <h2>أكثر ١٠ أسماء تكراراً</h2>
           <div id="mostNames" class="ranking-list"></div>
         </article>
         <article>
-          <h2>أقل ٥ أسماء تكراراً</h2>
+          <h2>أقل ١٠ أسماء تكراراً</h2>
           <div id="leastNames" class="ranking-list"></div>
         </article>
       </section>
@@ -76,7 +77,8 @@
       </section>
     </main>
     <script src="seed-data.js?v=7"></script>
-    <script src="numbers.js?v=2"></script>
+    <script src="numbers.js?v=3"></script>
+    <script src="site-actions.js?v=1"></script>
     <script type="module" src="header-auth.js?v=3"></script>
   </body>
 </html>
