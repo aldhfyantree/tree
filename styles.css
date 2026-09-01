@@ -33,7 +33,7 @@ textarea {
 }
 .topbar {
   min-height: 104px;
-  background: var(--ink);
+  background: var(--copper);
   border-bottom: 1px solid #ffffff1f;
   display: grid;
   grid-template-columns: 1fr;
@@ -437,7 +437,7 @@ nav {
 .hero {
   text-align: center;
   padding: 8px 20px;
-  background: radial-gradient(circle at 50% -20%, #fff 0, #f6f2e8 66%);
+  background: var(--cream);
 }
 .eyebrow {
   color: var(--gold);
@@ -1040,7 +1040,8 @@ textarea:focus {
     font-size: 20px;
   }
   .header-actions {
-    right: 8px;
+    right: auto;
+    left: 168px;
     top: 8px;
     gap: 4px;
   }

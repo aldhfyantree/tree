@@ -308,7 +308,7 @@
   font-size: 14px;
 }
 .radial-person.path-node .person-card-bg {
-  fill: #5b8e7d24;
+  fill: #dceae6;
   stroke: var(--green);
   stroke-width: 2.5;
 }
@@ -317,7 +317,7 @@
   font-weight: 700;
 }
 .radial-person.direct-child:not(.selected):not(.path-node) .person-card-bg {
-  fill: #be7c4d1f;
+  fill: #f3e3d8;
   stroke: var(--copper);
   stroke-width: 2;
 }
@@ -326,7 +326,7 @@
   font-weight: 700;
 }
 .radial-person.selected .person-card-bg {
-  fill: #5b8e7d35;
+  fill: #cfe1db;
   stroke: var(--green);
   stroke-width: 4;
 }
@@ -421,9 +421,26 @@
   font-size: 21px;
   color: var(--muted);
 }
+.person-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: auto;
+}
+.person-actions header .person-share-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--green);
+  font-size: 18px;
+}
 .person-action-buttons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 7px;
   flex: 1;
 }
@@ -472,14 +489,14 @@
   pointer-events: none;
 }
 .classic-person.path-node .classic-card-bg {
-  fill: #5b8e7d24;
+  fill: #dceae6;
   stroke: var(--green);
 }
 .classic-person.path-node .classic-node-name {
   fill: var(--green);
 }
 .classic-person.direct-child:not(.selected):not(.path-node) .classic-card-bg {
-  fill: #be7c4d1f;
+  fill: #f3e3d8;
   stroke: var(--copper);
   stroke-width: 2;
 }
@@ -487,7 +504,7 @@
   fill: var(--copper);
 }
 .classic-person.selected .classic-card-bg {
-  fill: #5b8e7d35;
+  fill: #cfe1db;
   stroke: var(--green);
   stroke-width: 3;
 }
@@ -637,7 +654,5 @@
     min-height: 46px;
     font-size: 9px;
   }
-  .person-action-buttons {
-    grid-template-columns: 1fr 1fr;
-  }
+  .person-action-buttons { grid-template-columns: repeat(3, 1fr); }
 }

@@ -27,9 +27,9 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=17" />
+    <link rel="stylesheet" href="styles.css?v=18" />
     <link rel="stylesheet" href="mobile-fix.css?v=5" />
-    <link rel="stylesheet" href="radial.css?v=11" />
+    <link rel="stylesheet" href="radial.css?v=12" />
   </head>
   <body>
     <header class="topbar">
@@ -196,12 +196,14 @@
       aria-label="خيارات الشخص المحدد"
     >
       <header>
-        <b id="menuPersonName"></b
-        ><button id="closePersonMenu" aria-label="إغلاق">×</button>
+        <b id="menuPersonName"></b>
+        <span class="person-header-actions">
+          <button id="sharePersonBtn" class="person-share-icon" aria-label="مشاركة هذا الاسم" title="مشاركة هذا الاسم">↗</button>
+          <button id="closePersonMenu" aria-label="إغلاق">×</button>
+        </span>
       </header>
       <div class="person-action-buttons">
         <button id="copyLineageBtn">نسخ الاسم الكامل</button
-        ><button id="sharePersonBtn">مشاركة هذا الاسم</button
         ><button id="addChildMenuBtn">إضافة ابن</button
         ><button id="suggestMenuBtn">طلب تعديل</button>
       </div>
@@ -292,6 +294,6 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="seed-data.js?v=7"></script>
     <script src="site-actions.js?v=1"></script>
-    <script type="module" src="app.js?v=15"></script>
+    <script type="module" src="app.js?v=16"></script>
   </body>
 </html>
