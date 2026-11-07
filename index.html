@@ -2,298 +2,87 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="theme-color" content="#173f32" />
     <title>شجرة الضفيان</title>
-    <meta name="description" content="شجرة الضفيان — إرثٌ يُحفظ، وصلةٌ لا تنقطع. استعرض شجرة العائلة التفاعلية والإصدار المطبوع." />
+    <meta name="description" content="شجرة عائلة الضفيان: ابحث عن اسمك، واعرف نسبك وصلة قرابتك، وتصفّح الشجرة المطبوعة." />
     <link rel="canonical" href="https://aldhfyantree-f3273.web.app/" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_SA" />
     <meta property="og:site_name" content="شجرة الضفيان" />
     <meta property="og:title" content="شجرة الضفيان" />
-    <meta property="og:description" content="إرثٌ يُحفظ، وصلةٌ لا تنقطع. الشجرة التفاعلية والمطبوعة لعائلة الضفيان." />
+    <meta property="og:description" content="ابحث عن اسمك في شجرة عائلة الضفيان، واعرف نسبك كاملاً وصلة قرابتك." />
     <meta property="og:url" content="https://aldhfyantree-f3273.web.app/" />
     <meta property="og:image" content="https://aldhfyantree-f3273.web.app/social-preview.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="شجرة الضفيان" />
+    <meta property="og:image:alt" content="شعار شجرة الضفيان" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="شجرة الضفيان" />
-    <meta name="twitter:description" content="إرثٌ يُحفظ، وصلةٌ لا تنقطع." />
+    <meta name="twitter:description" content="ابحث عن اسمك في شجرة عائلة الضفيان، واعرف نسبك كاملاً." />
     <meta name="twitter:image" content="https://aldhfyantree-f3273.web.app/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css?v=19" />
-    <link rel="stylesheet" href="mobile-fix.css?v=5" />
-    <link rel="stylesheet" href="radial.css?v=12" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="site.css?v=1" />
   </head>
   <body>
-    <header class="topbar">
-      <div class="header-actions">
-        <button id="helpBtn" class="header-icon" type="button" aria-label="طريقة الاستخدام" title="طريقة الاستخدام">؟</button>
-        <button class="header-icon" type="button" data-share-page aria-label="مشاركة الموقع" title="مشاركة الموقع"><svg class="share-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.3 10.8 15.7 6.4M8.3 13.2l7.4 4.4"></path></svg></button>
-      </div>
-      <a class="brand family-heading" href="#"
-        ><b>شجرة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></a
-      >
-      <nav>
-        <button class="ghost active nav-choice" data-view="tree">
-          <span>الشجرة التفاعلية</span>
-        </button>
-        <a class="ghost nav-link nav-choice" href="pdf.html"
-          ><span>الشجرة المطبوعة</span><small>الإصدار الأول</small></a
-        >
-        <a class="ghost nav-link nav-choice" href="numbers.html"
-          ><span>العائلة بالأرقام</span></a
-        >
-      </nav>
-      <button id="loginBtn" class="primary">تسجيل دخول</button>
-      <button
-        id="adminTopBtn"
-        class="primary admin-top hidden"
-        data-view="review"
-      >
-        الإدارة
+    <header class="top">
+      <a class="brand" href="./" aria-label="شجرة الضفيان — الصفحة الرئيسية">
+        <img src="logo.svg" alt="" width="44" height="44" />
+        <span><b>شجرة الضفيان</b><small>إرثٌ يُحفظ، وصلةٌ لا تنقطع</small></span>
+      </a>
+      <button id="bSearch" class="tbtn" type="button" aria-label="بحث عن اسم">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg><span>بحث</span>
       </button>
-      <button id="accountBtn" class="account hidden">
-        <span id="accountInitial">ع</span><span id="accountName">حسابي</span>
+      <button id="bMenu" class="tbtn" type="button" aria-label="القائمة">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg><span>القائمة</span>
+        <i id="menuDot" class="dot hidden"></i>
       </button>
     </header>
+    <nav class="tabs" aria-label="أقسام الموقع">
+      <button data-tab="tree" class="on">الشجرة</button>
+      <button data-tab="printed">الشجرة المطبوعة</button>
+      <button data-tab="numbers">العائلة بالأرقام</button>
+    </nav>
 
-    <main>
-      <section id="treeView" class="view active">
-        <div class="hero">
-          <div class="searchbox">
-            <span>⌕</span
-            ><input
-              id="search"
-              type="search"
-              placeholder="اكتب اسمك ثم بن واسم الأب… مثال: محمد بن علي"
-            /><kbd>بحث</kbd>
-          </div>
-        </div>
-
-        <div class="branch-strip" id="branches" hidden></div>
-        <div class="workspace radial-workspace">
-          <aside class="sidepanel">
-            <h2>طريقة الاستخدام</h2>
-            <p class="guide-line"><b>١</b> اضغط الاسم لفتح أبنائه أو إغلاقهم</p>
-            <p class="guide-line"><b>٢</b> استخدم ⋮ لنسخ النسب أو إرسال طلب</p>
-            <p class="guide-line"><b>٣</b> بدّل طريقة العرض في أي وقت</p>
-            <button id="expandAllBtn" class="side-action">
-              توسيع كامل الشجرة
-            </button>
-            <button id="rootBtn" class="side-action">إغلاق جميع الفروع</button>
-            <p class="privacy-note">
-              المعلومات الخاصة بالأحياء لا تظهر للعامة.
-            </p>
-          </aside>
-          <section class="tree-card">
-            <p class="tree-instructions">
-              افتح الفروع بالتدريج حتى تصل إلى اسمك. اضغط على الاسم للخيارات.
-            </p>
-            <div class="tree-toolbar">
-              <div id="breadcrumbs">
-                <span class="status-dot"></span
-                ><span id="dataStatus">الفروع الرئيسية</span>
-              </div>
-              <div class="view-switch">
-                <button class="active" data-tree-mode="radial">دائري</button
-                ><button data-tree-mode="classic">شجري</button>
-              </div>
-              <div class="zoom-tools">
-                <button
-                  id="expandAllTop"
-                  class="wide-tool"
-                  title="توسيع كامل الشجرة"
-                >
-                  توسيع الكل</button
-                ><button
-                  id="fitTreeBtn"
-                  class="wide-tool light-tool"
-                  title="احتواء الشجرة داخل الشاشة"
-                >
-                  احتواء</button
-                ><button id="rootBtnMobile" title="إغلاق الفروع">⌂</button
-                ><button id="zoomOut" title="تصغير">−</button
-                ><span id="zoomLabel">١٠٠٪</span
-                ><button id="zoomIn" title="تكبير">＋</button>
-              </div>
-            </div>
-            <div id="searchResults" class="search-results hidden"></div>
-            <div id="treeCanvas"><div id="tree"></div></div>
-          </section>
-        </div>
-      </section>
-
-      <section id="reviewView" class="view content-page">
-        <div class="page-head">
-          <div>
-            <p class="eyebrow">لوحة المدير</p>
-            <h1>طلبات المراجعة</h1>
-          </div>
-          <button id="seedBtn" class="secondary hidden">
-            تهيئة قاعدة البيانات
+    <main id="stage">
+      <section id="v-tree" class="view on" aria-label="الشجرة التفاعلية">
+        <svg id="chartSvg" role="img" aria-label="شجرة العائلة"></svg>
+        <div class="zoom" role="group" aria-label="التكبير">
+          <button id="zIn" type="button" aria-label="تكبير">+</button>
+          <button id="zOut" type="button" aria-label="تصغير">−</button>
+          <button id="zHome" type="button" aria-label="العودة لأصل الشجرة">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7M6.5 9.5V20h11V9.5" /></svg>
           </button>
         </div>
-        <section id="analyticsSummary" class="analytics-summary">
-          <p class="empty">جارٍ تحميل الإحصائيات…</p>
-        </section>
-        <div id="reviewList" class="review-list">
-          <p class="empty">لا توجد طلبات معلّقة.</p>
-        </div>
+        <p id="hint" class="hint">اضغط على أي اسم لتظهر أبناؤه</p>
       </section>
+      <section id="v-printed" class="view" aria-label="الشجرة المطبوعة">
+        <div class="pbar">
+          <span>الإصدار الأول من الشجرة المطبوعة</span>
+          <span class="grow"></span>
+          <button id="pOut" type="button" aria-label="تصغير">−</button>
+          <button id="pIn" type="button" aria-label="تكبير">+</button>
+          <a class="btn ghost" href="shajarat-aldhfyan-original.pdf" download>تحميل الملف</a>
+        </div>
+        <div id="pdfWrap" class="pdfwrap"><p id="pdfMsg" class="muted center">جارٍ فتح الشجرة المطبوعة…</p><canvas id="pdfCanvas" hidden></canvas></div>
+      </section>
+      <section id="v-numbers" class="view scroll" aria-label="العائلة بالأرقام"><div id="numbers" class="wrap"></div></section>
+      <section id="v-admin" class="view scroll" aria-label="لوحة الإدارة"><div id="admin" class="wrap"></div></section>
     </main>
 
-    <dialog id="welcomeGuide" class="modal guide-dialog" aria-labelledby="guideTitle">
-      <button class="close" type="button" data-guide-close aria-label="إغلاق">×</button>
-      <p class="eyebrow">مرحباً بك</p>
-      <h2 id="guideTitle">اختر طريقة عرض الشجرة</h2>
-      <p class="muted">يمكنك التبديل بين العرضين في أي وقت.</p>
-      <div class="guide-view-options">
-        <button type="button" class="guide-view active" data-guide-mode="radial">
-          <span class="guide-view-icon" aria-hidden="true">◎</span>
-          <b>العرض الدائري</b><small>الفروع حول أصل العائلة</small>
-        </button>
-        <button type="button" class="guide-view" data-guide-mode="classic">
-          <span class="guide-view-icon" aria-hidden="true">⌘</span>
-          <b>العرض الشجري</b><small>الأجيال على شكل مستويات</small>
-        </button>
-      </div>
-      <div class="guide-features">
-        <span><i>☝</i>اضغط الاسم لفتح فروعه</span>
-        <span><i>⌕</i>ابحث عن أي اسم</span>
-        <span><i>⋮</i>انسخ أو أضف أو اقترح تعديلاً</span>
-      </div>
-      <button id="guideStartBtn" type="button" class="primary full">ابدأ الاستعراض</button>
-    </dialog>
+    <div id="pp" class="pp" aria-live="polite"></div>
+    <aside id="drawer" class="drawer" aria-label="القائمة" aria-hidden="true"></aside>
+    <div id="drawerBg" class="drawer-bg"></div>
+    <div id="sheetBg" class="sheet-bg"><div id="sheet" class="sheet" role="dialog" aria-modal="true"></div></div>
+    <div id="toast" class="toast" role="status"></div>
+    <div id="recaptcha"></div>
 
-    <dialog id="personDialog" class="sheet">
-      <button class="close" data-close="personDialog">×</button>
-      <div class="profile-head">
-        <span id="profileInitial" class="avatar">ض</span>
-        <div>
-          <small>الاسم الكامل</small>
-          <h2 id="profileName"></h2>
-          <p id="profileLineage"></p>
-        </div>
-      </div>
-      <dl id="profileDetails" class="details-grid"></dl>
-      <div class="dialog-actions">
-        <button id="suggestBtn" class="primary">اقتراح تعديل</button
-        ><button id="addChildBtn" class="secondary">إضافة ابن</button>
-      </div>
-    </dialog>
-
-    <div
-      id="personMenu"
-      class="person-actions hidden"
-      role="toolbar"
-      aria-label="خيارات الشخص المحدد"
-    >
-      <header>
-        <b id="menuPersonName"></b>
-        <span class="person-header-actions">
-          <button id="sharePersonBtn" class="person-share-icon" aria-label="مشاركة هذا الاسم" title="مشاركة هذا الاسم"><svg class="share-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.3 10.8 15.7 6.4M8.3 13.2l7.4 4.4"></path></svg></button>
-          <button id="closePersonMenu" aria-label="إغلاق">×</button>
-        </span>
-      </header>
-      <div class="person-action-buttons">
-        <button id="copyLineageBtn">نسخ الاسم الكامل</button
-        ><button id="addChildMenuBtn">إضافة ابن</button
-        ><button id="suggestMenuBtn">طلب تعديل</button>
-      </div>
-    </div>
-
-    <dialog id="loginDialog" class="modal">
-      <button class="close" data-close="loginDialog">×</button>
-      <h2>دخول المساهمين</h2>
-      <p class="muted">سنرسل رمز تحقق لمرة واحدة. رقمك لا يظهر للعامة.</p>
-      <form id="phoneForm">
-        <label>رقم الجوال</label>
-        <div class="phone-row">
-          <input
-            id="phone"
-            type="tel"
-            dir="ltr"
-            placeholder="+9665XXXXXXXX"
-            required
-          /><button class="primary">إرسال الرمز</button>
-        </div>
-        <div id="recaptcha"></div>
-      </form>
-      <form id="codeForm" class="hidden">
-        <label>رمز التحقق</label
-        ><input
-          id="code"
-          inputmode="numeric"
-          maxlength="6"
-          dir="ltr"
-          required
-        /><button class="primary full">تحقق ودخول</button>
-      </form>
-      <p id="authMessage" class="form-message"></p>
-    </dialog>
-
-    <dialog id="profileSetupDialog" class="modal">
-      <h2>عرّفنا بنفسك</h2>
-      <p class="muted">تظهر هذه البيانات للمدير مع اقتراحاتك فقط.</p>
-      <form id="profileSetupForm">
-        <label>الاسم الكامل</label><input id="contributorName" required /><label
-          >صلتك بالعائلة أو الفرع</label
-        ><input id="contributorRelation" required /><button
-          class="primary full"
-        >
-          حفظ والمتابعة
-        </button>
-      </form>
-    </dialog>
-
-    <dialog id="requestDialog" class="modal">
-      <button class="close" data-close="requestDialog">×</button>
-      <h2 id="requestTitle">اقتراح تعديل</h2>
-      <form id="requestForm">
-        <input id="requestPersonId" type="hidden" /><input
-          id="requestType"
-          type="hidden"
-        />
-        <label id="nameLabel">الاسم</label><input id="requestName" required />
-        <div id="metadataFields">
-          <div class="two-col">
-            <div>
-              <label>تاريخ الميلاد</label><input id="birthDate" type="date" />
-            </div>
-            <div>
-              <label>تاريخ الوفاة</label><input id="deathDate" type="date" />
-            </div>
-          </div>
-          <label>المنصب أو العمل</label><input id="position" /><label
-            >المدينة</label
-          ><input id="city" /><label>ملاحظة</label
-          ><textarea id="requestNote" rows="3"></textarea>
-        </div>
-        <label>سبب التعديل أو مصدر المعلومة</label
-        ><textarea id="requestReason" rows="3" required></textarea>
-        <button class="primary full">إرسال للمراجعة</button>
-      </form>
-    </dialog>
-
-    <dialog id="accountDialog" class="modal">
-      <button class="close" data-close="accountDialog">×</button>
-      <h2>حساب المساهم</h2>
-      <p id="accountInfo"></p>
-      <button id="reviewBtn" class="secondary full hidden" data-view="review">
-        طلبات المراجعة <i id="pendingBadge">٠</i></button
-      ><button id="logoutBtn" class="danger full">تسجيل الخروج</button>
-    </dialog>
-    <div id="toast" class="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="seed-data.js?v=7"></script>
-    <script src="site-actions.js?v=2"></script>
-    <script type="module" src="app.js?v=16"></script>
+    <script type="module" src="site.js?v=1"></script>
   </body>
 </html>

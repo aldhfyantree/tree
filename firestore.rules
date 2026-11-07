@@ -1,30 +1,96 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // ---------- من هو المستخدم ----------
     function signedIn() { return request.auth != null; }
-    function isAdmin() { return signedIn() && request.auth.token.phone_number in ['+966552806075', '+16505553434']; }
+    function phone() { return signedIn() ? request.auth.token.get('phone_number', '') : ''; }
+    // المدير العام ثابت هنا ولا يمكن تغييره من الموقع
+    function isOwner() { return phone() in ['+966552806075', '+16505553434']; }
+    function roleDoc() { return /databases/$(database)/documents/roles/$(phone()); }
+    function hasRole() { return phone() != '' && exists(roleDoc()); }
+    function role() { return get(roleDoc()).data; }
+    function isStaff() { return isOwner() || hasRole(); }
+    // صلاحية مدير: review (قبول ورفض) · edit (تعديل مباشر) · roles (إدارة الصلاحيات) · logs (السجل والإحصائيات)
+    function can(p) { return isOwner() || (hasRole() && role().kind == 'admin' && role().perms.get(p, false) == true); }
+    // مشرف فرع: يملك الأسماء اللي تحت فروعه (أي اسم في نطاقه أحد فروعه)
+    function modOver(scope) { return hasRole() && role().kind == 'mod' && scope is list && scope.hasAny(role().branches); }
+
+    // ---------- الأسماء ----------
     match /persons/{id} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      // اسم جديد: مساره = مسار الأب + الأب (يُتحقق منه من قاعدة البيانات، فلا يقدر أحد يزوّر الفرع)
+      function validNew() {
+        return request.resource.data.id == id && request.resource.data.parent is string &&
+          request.resource.data.path == get(/databases/$(database)/documents/persons/$(request.resource.data.parent)).data.get('path', []).concat([request.resource.data.parent]);
+      }
+      allow create: if can('edit') || can('review') || (modOver(request.resource.data.get('path', [])) && validNew());
+      // المشرف يعدّل المعلومات فقط، ولا يغيّر الأب أو المسار
+      allow update: if can('edit') || can('review') ||
+        (modOver(resource.data.get('path', []).concat([id])) &&
+         request.resource.data.parent == resource.data.parent && request.resource.data.get('path', []) == resource.data.get('path', []) &&
+         request.resource.data.id == resource.data.id);
+      allow delete: if can('edit');
     }
+
+    // ---------- الحسابات ----------
     match /profiles/{uid} {
-      allow create, read, update: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow delete: if isAdmin();
+      allow read: if signedIn() && (request.auth.uid == uid || isStaff());
+      allow create, update: if signedIn() && request.auth.uid == uid;
+      allow delete: if isOwner();
     }
+
+    // ---------- المدراء والمشرفون (المفتاح = رقم الجوال) ----------
+    match /roles/{ph} {
+      allow read: if signedIn() && (phone() == ph || isStaff());
+      allow create, update: if can('roles') && !(ph in ['+966552806075', '+16505553434']) &&
+        request.resource.data.kind in ['admin', 'mod'] && request.resource.data.phone == ph;
+      allow delete: if can('roles');
+    }
+
+    // ---------- طلبات الإضافة والتعديل ----------
     match /changeRequests/{id} {
-      allow create: if signedIn() && request.resource.data.submittedBy == request.auth.uid && request.resource.data.status == 'pending';
-      allow read: if signedIn() && (resource.data.submittedBy == request.auth.uid || isAdmin());
-      allow update, delete: if isAdmin();
+      allow create: if signedIn() && request.resource.data.submittedBy == request.auth.uid &&
+        request.resource.data.status == 'pending' && request.resource.data.scope is list &&
+        !request.resource.data.keys().hasAny(['reviewedAt', 'reviewedBy', 'reviewedByName', 'reviewNote']);
+      allow read: if signedIn() && (resource.data.submittedBy == request.auth.uid || isStaff());
+      allow update: if (can('review') || modOver(resource.data.get('scope', []))) &&
+        resource.data.status == 'pending' && request.resource.data.status in ['approved', 'rejected'] &&
+        request.resource.data.reviewedBy == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt', 'reviewedBy', 'reviewedByName', 'reviewNote']);
+      allow delete: if isOwner();
     }
+
+    // ---------- السجل: كل حدث يُكتب مرة ولا يُعدَّل ----------
+    match /logs/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['type', 'at', 'device', 'uid', 'phone', 'name', 'page', 'personId', 'personName', 'detail']) &&
+        request.resource.data.at == request.time &&
+        request.resource.data.type in ['visit', 'share', 'copy', 'login', 'register', 'request', 'approve', 'reject', 'edit', 'add', 'role', 'tool'] &&
+        (request.resource.data.type in ['visit', 'share', 'copy'] || signedIn()) &&
+        (!('uid' in request.resource.data) || (signedIn() && request.resource.data.uid == request.auth.uid)) &&
+        (!('phone' in request.resource.data) || request.resource.data.phone == phone() || request.resource.data.phone == '') &&
+        (!(request.resource.data.type in ['approve', 'reject', 'edit', 'add', 'role', 'tool']) || isStaff());
+      allow read: if can('logs');
+      allow update: if false;
+      allow delete: if isOwner();
+    }
+
+    // ---------- عدّادات يومية ----------
+    match /stats/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['day', 'type', 'count']) && request.resource.data.count == 1 &&
+        id == request.resource.data.day + '_' + request.resource.data.type;
+      allow update: if request.resource.data.keys().hasOnly(['day', 'type', 'count']) && request.resource.data.count == resource.data.count + 1 &&
+        request.resource.data.day == resource.data.day && request.resource.data.type == resource.data.type;
+      allow read: if can('logs');
+    }
+
+    // ---------- الإحصائيات القديمة (للقراءة فقط) ----------
     match /analyticsPages/{id} {
       allow create: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == 1;
       allow update: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == resource.data.count + 1;
-      allow read: if isAdmin();
+      allow read: if can('logs');
     }
     match /analyticsNames/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == 1;
-      allow update: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == resource.data.count + 1;
-      allow read: if isAdmin();
+      allow read: if can('logs');
     }
   }
 }
