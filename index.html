@@ -25,7 +25,7 @@
     <meta name="twitter:image" content="https://aldhfyantree-f3273.web.app/social-preview.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="site.css?v=1" />
   </head>
   <body>
@@ -43,14 +43,19 @@
       </button>
     </header>
     <nav class="tabs" aria-label="أقسام الموقع">
-      <button data-tab="tree" class="on">الشجرة</button>
+      <button data-tab="tree" class="on">الشجرة التفاعلية</button>
       <button data-tab="printed">الشجرة المطبوعة</button>
       <button data-tab="numbers">العائلة بالأرقام</button>
     </nav>
 
     <main id="stage">
       <section id="v-tree" class="view on" aria-label="الشجرة التفاعلية">
-        <svg id="chartSvg" role="img" aria-label="شجرة العائلة"></svg>
+        <svg id="treeSvg" role="img" aria-label="شجرة العائلة"></svg>
+        <svg id="chartSvg" class="hidden" role="img" aria-label="مخطط العائلة"></svg>
+        <div class="vbar">
+          <div class="seg2" role="group" aria-label="طريقة العرض"><button data-view="tree" class="on">شجرة</button><button data-view="chart">مخطط</button></div>
+          <div class="seg2"><button id="openAll" type="button">عرض الكل</button><button id="foldAll" type="button">طي الكل</button></div>
+        </div>
         <div class="zoom" role="group" aria-label="التكبير">
           <button id="zIn" type="button" aria-label="تكبير">+</button>
           <button id="zOut" type="button" aria-label="تصغير">−</button>

@@ -104,7 +104,7 @@ function setTab(t, push = true) {
   if (t === "numbers") renderNumbers();
   if (t === "admin") renderAdmin();
   if (push) history.replaceState(null, "", t === "tree" ? location.pathname + location.search : "#" + t);
-  if (t === "tree" && C) requestAnimationFrame(() => chartGens(d3.zoomTransform(C.svg.node())));
+  if (t === "tree") { ensureView(); if (C) requestAnimationFrame(() => chartGens(d3.zoomTransform(C.svg.node()))); }
 }
 $$(".tabs button").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
 
@@ -145,7 +145,7 @@ function buildChart(keepOpen) {
   chartUpdate(root, 0);
   svg.call(zoom.transform, chartHome());
 }
-const openIds = () => (C ? C.root.descendants().filter((d) => d.children).map((d) => d.data.id) : []);
+
 function chartHome() {
   const el = $("#v-tree"), w = el.clientWidth || 360, h = el.clientHeight || 600, nodes = C.root.descendants();
   const minX = d3.min(nodes, (d) => -d.x) - CW / 2, maxX = d3.max(nodes, (d) => -d.x) + CW / 2;
@@ -192,6 +192,7 @@ function chartClick(d) {
   C.svg.transition("pan").duration(350).call(C.zoom.translateBy, bx + d.x, by + d.y);
 }
 function chartReveal(id) {
+  if (!C) return;
   const d = C.byId.get(id); if (!d) return;
   d.ancestors().slice(1).forEach((a) => (a.children = a._children));
   chartUpdate(C.root);
@@ -209,10 +210,257 @@ function chartGens(tr) {
   C.gens.selectAll("text").data(d3.range(C.maxD + 1)).join("text").attr("x", w - 10).attr("text-anchor", "start").attr("dy", "0.35em")
     .attr("y", (i) => tr.y - tr.k * i * CDY - (CH / 2 + 14) * tr.k).text((i) => "الجيل " + AR(i + 1));
 }
-$("#zIn").onclick = () => C.svg.transition().call(C.zoom.scaleBy, 1.3);
-$("#zOut").onclick = () => C.svg.transition().call(C.zoom.scaleBy, 1 / 1.3);
-$("#zHome").onclick = () => { clearSel(); C.root.descendants().forEach((d) => { if (d.depth >= 1) d.children = null; }); C.root.children = C.root._children; chartUpdate(C.root); C.svg.transition().duration(450).call(C.zoom.transform, chartHome()); };
+$("#zIn").onclick = () => Z().svg.transition().call(Z().zoom.scaleBy, 1.3);
+$("#zOut").onclick = () => Z().svg.transition().call(Z().zoom.scaleBy, 1 / 1.3);
+$("#zHome").onclick = () => openAll(false);
 if (store.get("dhf-hint")) $("#hint")?.remove();
+
+/* ---------- الشجرة الحيّة ---------- */
+let T = null; const NW = 84, NH = 32, LW = 92, LH = 38, DY = 92, SLOT = 84, CROWN = 120, TRUNK = 210;
+const LEAF = `M${-LW / 2} 0C${-LW / 2 + 8} ${-LH * .55} ${-LW * .05} ${-LH * .64} ${LW * .2} ${-LH * .44}C${LW * .35} ${-LH * .32} ${LW * .46} ${-LH * .12} ${LW / 2} 0C${LW * .43} ${LH * .17} ${LW * .32} ${LH * .33} ${LW * .17} ${LH * .43}C${-LW * .06} ${LH * .6} ${-LW / 2 + 8} ${LH * .55} ${-LW / 2} 0Z`;
+const VEINS = [-.28, -.06, .16, .34].map(f => { const x = LW * f, s = LH * (.36 - Math.abs(f) * .28); return `M${x} 0Q${x + 7} ${-s * .5} ${x + 15} ${-s}M${x} 0Q${x + 7} ${s * .5} ${x + 15} ${s}`; }).join("");
+// like a real tree: a branch is as thick as the whole family it carries (its cross-section shares the trunk's)
+const bw0 = d => Math.max(3, 62 * Math.sqrt((d.data.desc + 1) / (ROOT.desc + 1)));
+const bw = d => bw0(d) * (T ? T.S : 1);
+const seedOf = id => { let h = 7; for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) | 0; return ((h >>> 0) % 1000) / 500 - 1; };
+const f1 = v => v.toFixed(1);
+// positions: every person sits ABOVE his father (the tree only grows upward); the root is drawn at the foot of the trunk
+const PX = d => d.depth === 0 ? 0 : d.X, PY = d => d.depth === 0 ? T.base - 46 : d.Y;
+const lerp = (a, b, k) => a + (b - a) * k;
+const at = (d, k) => d.depth === 0 ? [0, -CROWN] : [lerp(d.ox ?? d.X, d.X, k), lerp(d.oy ?? d.Y, d.Y, k)];
+// tapered, slightly swaying branch; brothers leave their father together (bundled, upward) and then part ways
+function branchPath(p, c, k = 1, g = 1) {
+  let [x0, y0] = at(p, k), [x3, y3] = at(c, k);
+  if (p.depth === 0) { x0 = Math.sin(c.th || 0) * 30 * T.S * .55; y0 += 6; }   // limbs leave from across the trunk top, not one point
+  x3 = lerp(x0, x3, g); y3 = lerp(y0, y3, g);
+  const L = Math.hypot(x3 - x0, y3 - y0) || 1, s = seedOf(c.data.id), ux = (x3 - x0) / L, uy = (y3 - y0) / L, nx = -uy, ny = ux;
+  const dv = d => [Math.sin(d.th || 0), -Math.cos(d.th || 0)];
+  const dp = dv(p), dc = dv(c);
+  const x1 = x0 + dp[0] * L * .42 + nx * s * L * .05, y1 = y0 + dp[1] * L * .42 + ny * s * L * .05;
+  const x2 = x3 - dc[0] * L * .34 - nx * s * L * .06, y2 = y3 - dc[1] * L * .34 - ny * s * L * .06;
+  const w0 = bw(c), w1 = Math.max(2, bw(c) * .72), A = [], B = [];
+  for (let i = 0; i <= 14; i++) {
+    const t = i / 14, m = 1 - t;
+    const x = m * m * m * x0 + 3 * m * m * t * x1 + 3 * m * t * t * x2 + t * t * t * x3, y = m * m * m * y0 + 3 * m * m * t * y1 + 3 * m * t * t * y2 + t * t * t * y3;
+    const dx = 3 * m * m * (x1 - x0) + 6 * m * t * (x2 - x1) + 3 * t * t * (x3 - x2), dy = 3 * m * m * (y1 - y0) + 6 * m * t * (y2 - y1) + 3 * t * t * (y3 - y2), l = Math.hypot(dx, dy) || 1;
+    const w = (w0 + (w1 - w0) * t) / 2 * (.35 + .65 * g), ox = -dy / l * w, oy = dx / l * w;
+    A.push(f1(x + ox) + "," + f1(y + oy)); B.push(f1(x - ox) + "," + f1(y - oy));
+  }
+  return "M" + A.join("L") + "L" + B.reverse().join("L") + "Z";
+}
+function trunkPath(base, w = 30) {
+  const b = base, f = w * 2.4, tp = -CROWN - 8, hh = b - tp;
+  return `M${-w * .8},${tp} C${-w + 2},${tp + hh * .4} ${-w - 4},${tp + hh * .75} ${-w - 14},${b - 22} C${-w - 26},${b - 10} ${-f},${b - 4} ${-f - 26},${b + 2} L${-f + 16},${b + 3} C${-36},${b - 1} ${-26},${b - 3} ${-16},${b + 1} L-2,${b + 6} L12,${b} C26,${b - 3} 40,${b - 2} 56,${b + 3} L${f + 26},${b + 2} C${f},${b - 5} ${w + 26},${b - 10} ${w + 14},${b - 22} C${w + 4},${tp + hh * .75} ${w - 2},${tp + hh * .4} ${w * .8},${tp} Z`;
+}
+// tidy crown: every family owns its own slice of the crown, so branches never cross and names never sit on each other.
+// realism on top: the biggest son is placed in the middle (leader), sizes follow family size, leaves point outward.
+const vdesc = d => d.children ? d.children.reduce((n, c) => n + 1 + vdesc(c), 0) : 0;
+const scOf = d => d._children ? Math.max(.8, Math.min(1.15, .74 + .09 * Math.log2(d.data.desc + 2))) : .84;
+const wid = d => (d._children ? 80 : 50) * scOf(d);
+function arrange(d) {   // biggest son in the middle, smaller ones alternate outward
+  if (!d._children || d._ordered) return; d._ordered = true;
+  const by = d._children.slice().sort((a, b) => b.data.desc - a.data.desc), arr = [];
+  by.forEach((c, i) => (i % 2 ? arr.push(c) : arr.unshift(c)));
+  d._children = arr; if (d.children) d.children = arr;
+}
+function layoutOpen() {
+  const { root } = T;
+  root.descendants().forEach(arrange);
+  const n = root.descendants().length, SP = Math.PI * (n > 300 ? 1.25 : n > 80 ? 1.05 : .9);
+  d3.tree().size([SP, 1]).separation((a, b) => ((wid(a) + wid(b)) / 2 / 50) * (a.parent === b.parent ? 1 : 1.3) / Math.max(1, Math.sqrt(a.depth)))(root);
+  const nodes = root.descendants(), md = d3.max(nodes, d => d.depth) || 1, Rr = [0];
+  for (let k = 1; k <= md; k++) {
+    const ring = nodes.filter(d => d.depth === k).sort((a, b) => a.x - b.x);
+    let need = k === 1 ? 150 : Rr[k - 1] + (k <= 3 ? 100 : 78);
+    for (let i = 1; i < ring.length; i++) { const g = ring[i].x - ring[i - 1].x, w = (wid(ring[i]) + wid(ring[i - 1])) / 2 + 4; if (g > 1e-6) need = Math.max(need, w / g); }
+    Rr[k] = n > 200 ? Math.min(need, Rr[k - 1] + (k <= 3 ? 150 : 120)) : need;   // big crowns stay compact; the step below spreads names
+  }
+  nodes.forEach(d => { d.vd = vdesc(d); d.sc = d.depth ? scOf(d) : 1; if (!d.depth) { d.th = 0; return; }
+    const th = SP / 2 - d.x;
+    const r = Rr[d.depth] + (!d._children && d.parent.children ? (d.parent.children.indexOf(d) % 2) * 18 : 0);
+    d.th = th; d.nX = r * Math.sin(th); d.nY = -CROWN - r * Math.cos(th) * 1.08; });
+  if (n > 200) {   // many names: push apart any that touch, they stay close to their family's place
+    const sims = nodes.slice(1).map(d => ({ d, x: d.nX, y: d.nY, rx: wid(d) / 2 + 3, ry: 17 * d.sc + 3 }));
+    for (let y = -CROWN + 30; y < T.base; y += 30) sims.push({ x: 0, y, fx: 0, fy: y, rx: 50, ry: 16 });
+    const q = () => d3.quadtree(sims, s => s.x, s => s.y);
+    for (let it = 0; it < 60; it++) {      // ellipse-ish (wide, short) separation, matching the name shapes
+      const tr = q();
+      for (const a of sims) { if (a.fx !== undefined) continue;
+        tr.visit((nd, x0, y0, x1, y1) => { if (!nd.length) { let b = nd.data; do { if (b !== a) {
+          const dx = a.x - b.x, dy = a.y - b.y, ox = a.rx + b.rx - Math.abs(dx), oy = a.ry + b.ry - Math.abs(dy);
+          if (ox > 0 && oy > 0) { if (ox / (a.rx + b.rx) < oy / (a.ry + b.ry)) { const m = ox / 2 * (dx < 0 ? -1 : 1); a.x += m; if (b.fx === undefined) b.x -= m; } else { const m = oy / 2 * (dy < 0 ? -1 : 1); a.y += m; if (b.fx === undefined) b.y -= m; } }
+        } } while (nd = nd.next); }
+          return x0 > a.x + 140 || x1 < a.x - 140 || y0 > a.y + 50 || y1 < a.y - 50; });
+        a.x += (a.d.nX - a.x) * .02; a.y += (a.d.nY - a.y) * .02; }
+    }
+    sims.forEach(s => { if (s.d) { s.d.nX = s.x; s.d.nY = s.y; } });
+  }
+  const was = T.vis || new Set();
+  nodes.forEach(d => { if (!d.depth) return;
+    if (was.has(d.data.id)) { d.ox = d.X; d.oy = d.Y; }
+    else { const p = d.parent; d.ox = p.depth ? p.ox : 0; d.oy = p.depth ? p.oy : -CROWN; }
+    d.X = d.nX; d.Y = d.nY; });
+  T.vis = new Set(nodes.map(d => d.data.id));
+  return nodes;
+}
+// the whole family at once: a crown like the printed tree (computed once, used by «فتح كل الفروع»)
+function crownSeats() {
+  if (T.seats) return T.seats;
+  const SPAN = Math.PI * 1.06, DR = 96, h = d3.hierarchy(ROOT, p => p.kids);
+  d3.tree().size([SPAN, 1]).separation((a, b) => (a.parent === b.parent ? 1 : 1.5) / Math.max(1, a.depth * .6))(h);
+  const all = h.descendants();
+  all.forEach(d => { const th = SPAN / 2 - d.x, r = d.depth ? 70 + d.depth * DR : 0; d.tx = r * Math.sin(th); d.ty = -CROWN - r * Math.cos(th) * 1.1; });
+  const sims = all.map(d => ({ d, x: d.tx, y: d.ty, r: d.depth === 0 ? 40 : d.children ? 40 : 44 }));
+  sims[0].fx = 0; sims[0].fy = -CROWN;
+  const reach = d3.max(all, d => d.ty) + 200;
+  for (let y = -CROWN + 30; y < reach; y += 34) sims.push({ d: null, x: 0, y, fx: 0, fy: y, r: 58 });
+  const sim = d3.forceSimulation(sims).stop()
+    .force("x", d3.forceX(s => s.d ? s.d.tx : 0).strength(.2)).force("y", d3.forceY(s => s.d ? s.d.ty : s.y).strength(.3))
+    .force("c", d3.forceCollide(s => s.r).strength(.9).iterations(2));
+  for (let i = 0; i < 200; i++) sim.tick();
+  T.seats = new Map(sims.filter(s => s.d).map(s => [s.d.data.id, [s.x, s.y]]));
+  return T.seats;
+}
+function buildTree(keepOpen) {
+  const svg = d3.select("#treeSvg"); svg.selectAll("*").remove();
+  const root = d3.hierarchy(ROOT, p => p.kids), allNodes = root.descendants();
+  allNodes.forEach(d => { d._children = d.children; d.children = null; });
+  const zl = svg.append("g");
+  svg.insert("defs", ":first-child").html(`
+    <pattern id="bark" patternUnits="userSpaceOnUse" width="26" height="70"><rect width="26" height="70" fill="#5e3e26"/>
+      <path d="M3 0c2 18-2 30 1 46s-1 24 0 24M11 0c-2 14 3 26 0 40s2 22 1 30M19 0c2 20-3 28 0 44s1 18-1 26" stroke="#3a2416" stroke-width="2.6" fill="none" opacity=".75"/>
+      <path d="M7 4c1 12-1 22 1 34M15 10c-1 16 2 24 0 40M23 2c1 14-2 26 0 38" stroke="#7d5636" stroke-width="1.6" fill="none" opacity=".8"/></pattern>
+    <pattern id="barkHi" patternUnits="userSpaceOnUse" width="26" height="70"><rect width="26" height="70" fill="#9a6a2c"/>
+      <path d="M3 0c2 18-2 30 1 46s-1 24 0 24M11 0c-2 14 3 26 0 40s2 22 1 30M19 0c2 20-3 28 0 44s1 18-1 26" stroke="#6e4618" stroke-width="2.6" fill="none" opacity=".8"/>
+      <path d="M7 4c1 12-1 22 1 34M15 10c-1 16 2 24 0 40M23 2c1 14-2 26 0 38" stroke="#c4904a" stroke-width="1.6" fill="none" opacity=".8"/></pattern>
+    <linearGradient id="trunkShade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset=".7" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+    <radialGradient id="wood" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#f6e2bc"/><stop offset=".65" stop-color="#e2bb84"/><stop offset="1" stop-color="#c38d55"/></radialGradient>
+    <linearGradient id="leafG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a6d462"/><stop offset=".55" stop-color="#7fb446"/><stop offset="1" stop-color="#5a9132"/></linearGradient>
+    <radialGradient id="soil" cy=".35"><stop offset="0" stop-color="#7a9a48"/><stop offset=".6" stop-color="#8ba65a"/><stop offset="1" stop-color="#b9c58e" stop-opacity="0"/></radialGradient>`);
+  const ground = zl.append("ellipse").attr("class", "ground").attr("cx", 0).attr("rx", 360).attr("ry", 42);
+  const gLink = zl.append("g");
+  const gGround = zl.append("g");
+  const trunk = gGround.append("path").attr("class", "trunk"), shade = gGround.append("path").attr("class", "trunk-shade");
+  const gNode = zl.append("g");
+  const zoom = d3.zoom().scaleExtent([.06, 2.5]).on("zoom", e => zl.attr("transform", e.transform));
+  svg.call(zoom).on("dblclick.zoom", null);
+  T = { svg, root, zl, gLink, gNode, zoom, ground, trunk, shade, base: TRUNK, S: 1, byId: new Map(allNodes.map(d => [d.data.id, d])) };
+  root.children = root._children;
+  if (keepOpen) keepOpen.forEach((id) => { const d = T.byId.get(id); if (d && d._children) d.children = d._children; });
+  treeUpdate(root, 0);
+  svg.call(zoom.transform, treeHome());
+}
+function treeHome() {
+  const el = $("#v-tree"), w = el.clientWidth, h = el.clientHeight - 64, nodes = T.root.descendants().slice(1);
+  const x0 = Math.min(-120, d3.min(nodes, PX) - LW / 2), x1 = Math.max(120, d3.max(nodes, PX) + LW / 2);
+  const y0 = d3.min(nodes, PY) - LH - 10, y1 = T.base + 40;
+  const k = Math.max(.08, Math.min(1.1, (w - 24) / (x1 - x0), (h - 60) / (y1 - y0)));
+  return d3.zoomIdentity.translate(w / 2 - k * (x0 + x1) / 2, h - 16 - k * y1).scale(k);
+}
+function leafPose(sel, d) {
+  const th = d.th || 0, L = th >= 0 ? 1 : -1, al = Math.atan2(-Math.cos(th), Math.sin(th)) * 180 / Math.PI, a = L > 0 ? al : al + 180;
+  sel.select(".rot").attr("transform", `rotate(${a})`);
+  sel.select(".off").attr("transform", `translate(${L * (LW / 2 - 2)},0)`);
+  sel.selectAll(".shape,.rib,.veins,.mid").attr("transform", L > 0 ? null : "scale(-1,1)");
+}
+function treeUpdate(source, dur = 480) {
+  const { root, gNode, gLink } = T;
+  const nodes = layoutOpen(), links = root.links(), vis = nodes.slice(1);
+  const t = T.svg.transition("lay").duration(dur);
+  const span = vis.length ? d3.max(vis, d => d.X) - d3.min(vis, d => d.X) : 200;
+  T.S = Math.max(1, Math.min(3, span / 1200));
+  const tw = 30 * T.S;
+  T.base = TRUNK + (T.S - 1) * 80;
+  T.trunk.transition(t).attr("d", trunkPath(T.base, tw)); T.shade.transition(t).attr("d", trunkPath(T.base, tw));
+  T.ground.transition(t).attr("cy", T.base + 10).attr("rx", 300 + 60 * T.S);
+  const node = gNode.selectAll("g.tn").data(nodes, d => d.data.id);
+  const en = node.enter().append("g").attr("opacity", 0)
+    .attr("class", d => "tn " + (d._children ? "inner" : "leafn") + (d.depth === 0 ? " root" : ""))
+    .attr("transform", d => d.depth ? `translate(${d.ox},${d.oy})` : `translate(0,${T.base - 46})`).on("click", (e, d) => treeClick(d));
+  en.each(function (d) {
+    const g = d3.select(this).append("g").attr("class", "rot").append("g").attr("class", "off"), r = d.depth === 0 ? 1.35 : 1;
+    if (d._children) { g.append("ellipse").attr("class", "shape").attr("rx", NW / 2 * r).attr("ry", NH / 2 * r);
+      g.append("ellipse").attr("class", "ring").attr("rx", NW / 2 * r - 7).attr("ry", NH / 2 * r - 5); }
+    else { g.append("path").attr("class", "rib").attr("d", `M${-LW / 2 - 9} 2Q${-LW / 2 - 3} 1 ${-LW / 2 + 3} 0`);
+      g.append("path").attr("class", "shape").attr("d", LEAF);
+      g.append("path").attr("class", "veins").attr("d", VEINS);
+      g.append("path").attr("class", "mid").attr("d", `M${-LW / 2 + 2} 0Q0 -1.5 ${LW / 2 - 4} 0`); }
+    g.append("text").attr("class", "nm").attr("dy", "0.38em").attr("text-anchor", "middle").attr("x", d._children ? 0 : 3)
+      .attr("font-size", d.depth === 0 ? 18 : Math.min(d._children ? 13 : 14, ((d._children ? NW : LW) - 22) / (dn(d.data).length * .58))).text(dn(d.data));
+  });
+  const bd = en.append("g").attr("class", "badge").attr("transform", `translate(0,${-NH / 2 - 3})`);
+  bd.append("rect").attr("x", -15).attr("y", -9).attr("width", 30).attr("height", 17).attr("rx", 8.5);
+  bd.append("text").attr("dy", "0.33em").attr("text-anchor", "middle");
+  const all = node.merge(en);
+  all.filter(d => !d._children && d.depth).each(function (d) { leafPose(d3.select(this), d); });
+  all.select(".badge").style("display", d => d._children && !d.children ? null : "none")
+    .select("text").text(d => d._children ? "▲ " + AR(d._children.length) : "");
+  all.transition(t).attr("opacity", 1).attr("transform", d => `translate(${PX(d)},${PY(d)}) scale(${d.depth ? d.sc || 1 : 1})`);
+  node.exit().transition(t).attr("opacity", 0).attr("transform", d => { const p = d.parent; return p && p.depth ? `translate(${p.X},${p.Y})` : `translate(0,${-CROWN})`; }).remove();
+  const link = gLink.selectAll("path").data(links, d => d.target.data.id);
+  const le = link.enter().append("path").attr("class", "lk").attr("d", d => branchPath(d.source, d.target, 0, .001));
+  le.transition(t).attrTween("d", d => k => branchPath(d.source, d.target, k, Math.max(.001, k)));
+  link.transition(t).attrTween("d", d => k => branchPath(d.source, d.target, k, 1));
+  link.exit().transition(t).attrTween("d", d => k => branchPath(d.source, d.target, 1, Math.max(.001, 1 - k))).remove();
+  treeMarks();
+}
+function drawGens() {}
+function treeClick(d) {
+  $("#hint")?.remove(); store.set("dhf-hint", "1");
+  const bx = PX(d), by = PY(d);
+  if (d._children) d.children = d.children ? null : d._children;
+  select(d.data.id, false);
+  treeUpdate(d);
+  T.svg.transition("pan").duration(480).call(T.zoom.translateBy, bx - PX(d), by - PY(d));
+}
+function treeReveal(id, extra) {
+  if (!T) return;
+  const d = T.byId.get(id); if (!d) return;
+  d.ancestors().slice(1).forEach(a => a.children = a._children);
+  (extra || []).forEach(x => { const n = T.byId.get(x); if (n && n !== d) n.ancestors().slice(1).forEach(a => a.children = a._children); });
+  treeUpdate(T.root);
+  const el = $("#v-tree"), w = el.clientWidth, h = el.clientHeight;
+  if (extra && extra.length) {
+    const ns = [d, ...extra.map(x => T.byId.get(x)).filter(Boolean)];
+    const x0 = d3.min(ns, PX) - LW, x1 = d3.max(ns, PX) + LW, y0 = d3.min(ns, PY) - LH, y1 = d3.max(ns, PY) + LH;
+    const k = Math.max(.08, Math.min(1.1, (w - 30) / (x1 - x0), (h - 210) / (y1 - y0)));
+    return T.svg.transition("pan").duration(650).call(T.zoom.transform, d3.zoomIdentity.translate(w / 2 - k * (x0 + x1) / 2, (h - 150) / 2 - k * (y0 + y1) / 2).scale(k));
+  }
+  const k = Math.max(d3.zoomTransform(T.svg.node()).k, .7);
+  T.svg.transition("pan").duration(550).call(T.zoom.transform, d3.zoomIdentity.translate(w / 2 - k * PX(d), (h - 150) / 2 - k * PY(d)).scale(k));
+}
+function treeMarks() {
+  if (!T) return;
+  T.gNode.selectAll("g.tn").classed("onpath", d => pathSet.has(d.data.id)).classed("sel", d => d.data.id === sel).classed("me", d => d.data.id === ME);
+  T.gLink.selectAll("path").classed("onpath", d => pathSet.has(d.target.data.id));
+}
+
+/* ---------- التبديل بين الشجرة والمخطط، وعرض/طي الكل ---------- */
+let view = store.get("dhf-view") === "chart" ? "chart" : "tree", dirty = { tree: true, chart: true };
+const openSet = () => { const s = new Set(); [C, T].forEach((X) => X && X.root.descendants().forEach((d) => d.children && s.add(d.data.id))); return [...s]; };
+function ensureView(keep) {
+  if (view === "tree" && dirty.tree) { buildTree(keep); dirty.tree = false; }
+  if (view === "chart" && dirty.chart) { buildChart(keep); dirty.chart = false; }
+}
+function setView(v) {
+  const keep = openSet(); view = v; store.set("dhf-view", v);
+  $("#treeSvg").classList.toggle("hidden", v !== "tree"); $("#chartSvg").classList.toggle("hidden", v !== "chart");
+  $$("[data-view]").forEach((b) => b.classList.toggle("on", b.dataset.view === v));
+  if (dirty[v]) { ensureView(keep); } 
+  marks(); if (sel) reveal(sel);
+}
+$$("[data-view]").forEach((b) => (b.onclick = () => setView(b.dataset.view)));
+const marks = () => { treeMarks(); chartMarks(); };
+const reveal = (id) => (view === "tree" ? treeReveal(id) : chartReveal(id));
+const Z = () => (view === "tree" ? T : C);
+function openAll(on) {
+  clearSel();
+  if (view === "tree") { T.byId.forEach((d) => (d.children = on ? d._children : d.depth < 1 ? d._children : null)); treeUpdate(T.root); T.svg.transition().duration(450).call(T.zoom.transform, treeHome()); }
+  else { C.byId.forEach((d) => (d.children = on ? d._children : d.depth < 1 ? d._children : null)); chartUpdate(C.root); C.svg.transition().duration(450).call(C.zoom.transform, chartHome()); }
+  dirty[view === "tree" ? "chart" : "tree"] = true;
+}
+$("#openAll").onclick = () => openAll(true);
+$("#foldAll").onclick = () => openAll(false);
 
 /* ====================== بطاقة الشخص ====================== */
 function select(id, reveal) {
@@ -220,9 +468,9 @@ function select(id, reveal) {
   if (tab !== "tree") setTab("tree");
   sel = id; pathSet = new Set(chain(p).map((x) => x.id));
   renderPanel();
-  if (C) { if (reveal) chartReveal(id); chartMarks(); }
+  if (reveal) { const keep = view; ensureView(); keep === view && (view === "tree" ? treeReveal(id) : chartReveal(id)); } marks();
 }
-function clearSel() { sel = null; pathSet = new Set(); document.body.classList.remove("has-pp"); chartMarks(); }
+function clearSel() { sel = null; pathSet = new Set(); document.body.classList.remove("has-pp"); marks(); }
 function renderPanel() {
   const p = sel && P.get(sel), el = $("#pp");
   document.body.classList.toggle("has-pp", !!p);
@@ -287,7 +535,7 @@ let ME = null;
 function setMe(id, save = true) {
   ME = id && P.has(id) ? id : null; store.set("dhf-me", ME);
   if (save && user && db && profile) { profile.personId = ME || ""; F.setDoc(ref("profiles", user.uid), { personId: ME || "" }, { merge: true }).catch(() => {}); }
-  chartMarks(); renderPanel();
+  marks(); renderPanel();
 }
 const ORD = ["", "الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة"];
 function relate(a, b) {
@@ -327,7 +575,7 @@ function openRel(a = ME, b = null) {
     const sl = e.target.closest("[data-slot]")?.dataset.slot, act = e.target.closest("[data-rel]")?.dataset.rel;
     if (sl) pickPerson(sl === "a" ? "اختر الشخص الأول" : "اختر الشخص الثاني", (p) => openRel(sl === "a" ? p.id : a, sl === "b" ? p.id : b));
     if (act === "me") openRel(ME, b);
-    if (act === "show") { closeSheet(); const r = relate(a, b); select(b, true); chain(P.get(a)).forEach((x) => pathSet.add(x.id)); chartReveal(a); chartReveal(b); chartMarks(); }
+    if (act === "show") { closeSheet(); const r = relate(a, b); select(b, true); chain(P.get(a)).forEach((x) => pathSet.add(x.id)); reveal(a); reveal(b); marks(); }
   };
 }
 function chooseMe() {
@@ -706,7 +954,7 @@ async function loadPeople(keep) {
   if (!db) return;
   try {
     const snap = await F.getDocs(col("persons"));
-    if (!snap.empty) { const open = openIds(); setPeople(snap.docs.map((x) => x.data())); remote = true; buildChart(keep ? open : null); if (sel && !P.has(sel)) clearSel(); else renderPanel(); }
+    if (!snap.empty) { const open = openSet(); setPeople(snap.docs.map((x) => x.data())); remote = true; dirty = { tree: true, chart: true }; ensureView(keep ? open : null); if (sel && !P.has(sel)) clearSel(); else renderPanel(); }
   } catch (e) { console.warn("persons", e); }
 }
 function route() {
@@ -718,7 +966,7 @@ function route() {
 (async function start() {
   setPeople(window.SEED_PEOPLE || []);
   const me = store.get("dhf-me"); if (me && P.has(me)) ME = me;
-  buildChart();
+  setView(view);
   addEventListener("resize", () => { if (C) chartGens(d3.zoomTransform(C.svg.node())); });
   const ok = await initFirebase();
   if (ok) { await loadPeople(); F.onAuthStateChanged(auth, (u) => onUser(u)); }
