@@ -2,29 +2,170 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function isAdmin() { return signedIn() && request.auth.token.phone_number in ['+966552806075', '+16505553434']; }
+    function phone() { return signedIn() ? request.auth.token.get('phone_number', '') : ''; }
+    // Owner phone — keep in sync with ADMIN_PHONES in site-config.js
+    function isOwner() { return phone() in ['+966552806075']; }
+    function isReviewer() {
+      return phone() != ''
+        && exists(/databases/$(database)/documents/reviewers/$(phone()))
+        && get(/databases/$(database)/documents/reviewers/$(phone())).data.active == true;
+    }
+    function canReview() { return isOwner() || isReviewer(); }
+    // صلاحيات المدير: review قبول/رفض · edit تعديل مباشر · roles إدارة المدراء والمشرفين · logs السجل والإحصائيات
+    // المراجع القديم (بدون نوع) يعامل كمدير بصلاحية القبول والرفض فقط. مشرف الفرع kind == 'mod'.
+    function rv() { return get(/databases/$(database)/documents/reviewers/$(phone())).data; }
+    function perm(p) {
+      return isOwner() || (isReviewer() && rv().get('kind', 'admin') == 'admin' && rv().get('perms', {'review': true}).get(p, false) == true);
+    }
+
+    function str(v, max) { return v is string && v.size() <= max; }
+    function personFields() {
+      return ['id', 'name', 'parent', 'note', 'birthDate', 'deathDate', 'position', 'city', 'updatedAt', 'updatedBy'];
+    }
+    function validPerson(id) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(personFields())
+        && d.id == id && str(d.id, 40)
+        && str(d.name, 60) && d.name.size() > 0
+        && str(d.parent, 40) && d.parent != id
+        && str(d.get('note', ''), 500)
+        && str(d.get('birthDate', ''), 30) && str(d.get('deathDate', ''), 30)
+        && str(d.get('position', ''), 100) && str(d.get('city', ''), 60);
+    }
+    function validProposed(p) {
+      return p is map
+        && p.keys().hasOnly(['id', 'name', 'parent', 'note', 'birthDate', 'deathDate', 'position', 'city'])
+        && str(p.get('name', ''), 60)
+        && str(p.get('note', ''), 500)
+        && str(p.get('birthDate', ''), 30) && str(p.get('deathDate', ''), 30)
+        && str(p.get('position', ''), 100) && str(p.get('city', ''), 60)
+        && str(p.get('id', ''), 40) && str(p.get('parent', ''), 40);
+    }
+    // Small, single-document copies of the whole tree (meta/tree, backups/*).
+    function validTreeCopy() {
+      return request.resource.data.people is list
+        && request.resource.data.count is int;
+    }
+
     match /persons/{id} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update: if canReview() && validPerson(id);
+      allow delete: if perm('edit');
+    }
+    // The whole tree in one document, so each visit costs 1 read.
+    match /meta/tree {
+      allow read: if true;
+      allow write: if canReview()
+        && request.resource.data.keys().hasOnly(['people', 'count', 'updatedAt', 'updatedBy'])
+        && validTreeCopy();
+    }
+    match /backups/{id} {
+      allow get: if canReview();
+      allow list: if isOwner();
+      allow create: if canReview()
+        && str(id, 60)
+        && request.resource.data.keys().hasOnly(['people', 'count', 'kind', 'createdAt', 'createdBy'])
+        && validTreeCopy();
+      allow update, delete: if isOwner();
     }
     match /profiles/{uid} {
-      allow create, read, update: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow delete: if isAdmin();
+      allow read: if signedIn() && (request.auth.uid == uid || isOwner());
+      allow create, update: if signedIn() && (request.auth.uid == uid || isOwner())
+        && str(request.resource.data.get('name', ''), 80)
+        && str(request.resource.data.get('relation', ''), 80);
+      allow delete: if isOwner();
     }
     match /changeRequests/{id} {
-      allow create: if signedIn() && request.resource.data.submittedBy == request.auth.uid && request.resource.data.status == 'pending';
-      allow read: if signedIn() && (resource.data.submittedBy == request.auth.uid || isAdmin());
-      allow update, delete: if isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['type', 'personId', 'personName', 'personLineage', 'proposed', 'reason', 'scope',
+             'submittedBy', 'submittedPhone', 'submittedName', 'submittedRelation', 'status', 'createdAt'])
+        && (!('scope' in request.resource.data) || (request.resource.data.scope is list && request.resource.data.scope.size() <= 60))
+        && request.resource.data.submittedBy == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.type in ['update', 'addChild']
+        && str(request.resource.data.personId, 40)
+        && str(request.resource.data.get('personName', ''), 60)
+        && str(request.resource.data.get('personLineage', ''), 400)
+        && validProposed(request.resource.data.proposed)
+        && str(request.resource.data.reason, 1000)
+        && str(request.resource.data.get('submittedName', ''), 80)
+        && str(request.resource.data.get('submittedRelation', ''), 80)
+        && request.resource.data.submittedPhone == (phone() != '' ? phone() : 'بدون تسجيل دخول')
+        && request.resource.data.createdAt == request.time;
+      allow read: if signedIn() && (resource.data.submittedBy == request.auth.uid || canReview());
+      allow update: if canReview()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'reviewedAt', 'reviewedBy', 'reviewedByPhone', 'reviewedByRole', 'reviewedByName', 'reviewNote'])
+        && request.resource.data.reviewedBy == request.auth.uid
+        && str(request.resource.data.get('reviewNote', ''), 300) && str(request.resource.data.get('reviewedByName', ''), 80)
+        && request.resource.data.status in ['approved', 'rejected'];
+      allow delete: if isOwner();
     }
+
+    // Visit counters: only known pages, only +1 at a time.
+    function counterOk() {
+      return request.resource.data.keys().hasOnly(['count', 'lastEventAt'])
+        && request.resource.data.lastEventAt == request.time
+        && request.resource.data.count == (resource == null ? 1 : resource.data.count + 1);
+    }
+    function knownPage(p) { return p in ['interactive_tree', 'first_edition', 'family_numbers']; }
     match /analyticsPages/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == 1;
-      allow update: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == resource.data.count + 1;
-      allow read: if isAdmin();
+      allow create, update: if knownPage(id) && counterOk();
+      allow read: if perm('logs');
     }
     match /analyticsNames/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == 1;
-      allow update: if request.resource.data.keys().hasOnly(['count', 'lastEventAt']) && request.resource.data.count == resource.data.count + 1;
-      allow read: if isAdmin();
+      allow create, update: if str(id, 40) && id.matches('^[A-Za-z0-9_-]+$') && counterOk();
+      allow read: if perm('logs');
+    }
+    match /analyticsPageWeeks/{id} {
+      allow create, update: if request.resource.data.keys().hasOnly(['page', 'weekStart', 'count', 'lastEventAt'])
+        && knownPage(request.resource.data.page)
+        && request.resource.data.weekStart is string
+        && request.resource.data.weekStart.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && id == request.resource.data.weekStart + '_' + request.resource.data.page
+        && request.resource.data.lastEventAt == request.time
+        && request.resource.data.count == (resource == null ? 1 : resource.data.count + 1)
+        && (resource == null || (request.resource.data.page == resource.data.page
+            && request.resource.data.weekStart == resource.data.weekStart));
+      allow read: if perm('logs');
+    }
+    match /reviewers/{phoneId} {
+      allow get: if signedIn() && (canReview() || phone() == phoneId);
+      allow list: if canReview();
+      // المدير العام، أو مدير عنده صلاحية إدارة الصلاحيات (ولا أحد يعدّل رقم المدير العام)
+      allow create, update: if perm('roles') && !(phoneId in ['+966552806075'])
+        && request.resource.data.keys().hasOnly(['phone', 'active', 'name', 'kind', 'perms', 'branches', 'branchNames', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+        && request.resource.data.phone == phoneId && request.resource.data.active is bool
+        && request.resource.data.get('kind', 'admin') in ['admin', 'mod']
+        && str(request.resource.data.get('name', ''), 80)
+        && (!('branches' in request.resource.data) || (request.resource.data.branches is list && request.resource.data.branches.size() <= 20));
+      allow delete: if perm('roles') && !(phoneId in ['+966552806075']);
+    }
+
+    // ---------- السجل: كل حدث يُكتب مرة ولا يُعدَّل ----------
+    match /logs/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['type', 'at', 'device', 'uid', 'phone', 'name', 'page', 'personId', 'personName', 'detail'])
+        && request.resource.data.at == request.time
+        && request.resource.data.type in ['visit', 'share', 'copy', 'login', 'register', 'request', 'approve', 'reject', 'edit', 'add', 'delete', 'role', 'tool']
+        && (request.resource.data.type in ['visit', 'share', 'copy'] || signedIn())
+        && (!('uid' in request.resource.data) || (signedIn() && request.resource.data.uid == request.auth.uid))
+        && (!('phone' in request.resource.data) || request.resource.data.phone == phone() || request.resource.data.phone == '')
+        && str(request.resource.data.get('detail', ''), 500) && str(request.resource.data.get('personName', ''), 500)
+        && str(request.resource.data.get('name', ''), 80) && str(request.resource.data.get('device', ''), 20)
+        && str(request.resource.data.get('page', ''), 40) && str(request.resource.data.get('personId', ''), 40)
+        && (!(request.resource.data.type in ['approve', 'reject', 'edit', 'add', 'delete', 'role', 'tool']) || canReview());
+      allow read: if perm('logs');
+      allow update: if false;
+      allow delete: if isOwner();
+    }
+    // ---------- عدّادات يومية للسجل ----------
+    match /stats/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['day', 'type', 'count']) && request.resource.data.count == 1
+        && request.resource.data.day is string && request.resource.data.type is string
+        && id == request.resource.data.day + '_' + request.resource.data.type;
+      allow update: if request.resource.data.keys().hasOnly(['day', 'type', 'count']) && request.resource.data.count == resource.data.count + 1
+        && request.resource.data.day == resource.data.day && request.resource.data.type == resource.data.type;
+      allow read: if perm('logs');
     }
   }
 }

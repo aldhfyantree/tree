@@ -1,0 +1,32 @@
+name: نسخة احتياطية أسبوعية
+
+on:
+  schedule:
+    - cron: "23 0 * * 5" # كل جمعة 3:23 فجراً بتوقيت الرياض
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تنزيل الأسماء من قاعدة البيانات
+        run: node scripts/weekly-backup.mjs
+      - name: حفظ النسخة في المستودع
+        run: |
+          git config user.name "family-backup-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backups
+          git diff --cached --quiet && { echo "لا تغيير"; exit 0; }
+          git commit -m "نسخة احتياطية أسبوعية $(date -u +%Y-%m-%d)"
+          git push

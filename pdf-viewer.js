@@ -1,5 +1,6 @@
 import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { firebaseConfig } from "./site-config.js";
 import {
   getAnalytics,
   isSupported,
@@ -15,15 +16,7 @@ import {
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs";
-const firebaseConfig = {
-    apiKey: "AIzaSyCw0GNrUYIvwPYY5LpCgnuFYi7a903qAuE",
-    authDomain: "aldhfyantree-f3273.firebaseapp.com",
-    projectId: "aldhfyantree-f3273",
-    storageBucket: "aldhfyantree-f3273.firebasestorage.app",
-    messagingSenderId: "436236972378",
-    appId: "1:436236972378:web:e57101eeb8c3b41a2b8363",
-  },
-  firebaseApp = initializeApp(firebaseConfig, "pdf-page");
+const firebaseApp = initializeApp(firebaseConfig, "pdf-page");
 isSupported()
   .then((ok) => {
     if (ok)
@@ -32,9 +25,35 @@ isSupported()
       });
   })
   .catch(() => {});
+const analyticsDb = getFirestore(firebaseApp),
+  analyticsDate = new Date(Date.now() + 3 * 60 * 60 * 1000),
+  analyticsUtc = new Date(
+    Date.UTC(
+      analyticsDate.getUTCFullYear(),
+      analyticsDate.getUTCMonth(),
+      analyticsDate.getUTCDate(),
+    ),
+  ),
+  analyticsDayFromMonday = (analyticsUtc.getUTCDay() + 6) % 7;
+analyticsUtc.setUTCDate(analyticsUtc.getUTCDate() - analyticsDayFromMonday);
+const analyticsWeekStart = analyticsUtc.toISOString().slice(0, 10);
 setDoc(
-  doc(getFirestore(firebaseApp), "analyticsPages", "first_edition"),
+  doc(analyticsDb, "analyticsPages", "first_edition"),
   { count: increment(1), lastEventAt: serverTimestamp() },
+  { merge: true },
+).catch(() => {});
+setDoc(
+  doc(
+    analyticsDb,
+    "analyticsPageWeeks",
+    `${analyticsWeekStart}_first_edition`,
+  ),
+  {
+    page: "first_edition",
+    weekStart: analyticsWeekStart,
+    count: increment(1),
+    lastEventAt: serverTimestamp(),
+  },
   { merge: true },
 ).catch(() => {});
 
@@ -64,3 +83,5 @@ async function renderPdf() {
   }
 }
 renderPdf();
+
+

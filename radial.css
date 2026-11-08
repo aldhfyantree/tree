@@ -24,7 +24,7 @@
   margin-top: 3px;
 }
 .radial-workspace {
-  grid-template-columns: 210px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   max-width: 1350px;
 }
 .guide-line {
@@ -53,12 +53,7 @@
 #treeCanvas {
   padding: 0;
   min-height: 650px;
-  background: radial-gradient(
-    circle at center,
-    #ffffff 0,
-    #edf6f9 58%,
-    #dcebe8 100%
-  );
+  background: var(--tree-bg);
   overflow: hidden;
   touch-action: none;
 }
@@ -301,8 +296,8 @@
   font-size: 16px;
 }
 .main-branch .person-card-bg {
-  fill: #cba1352b;
-  stroke: var(--gold);
+  fill: #fff;
+  stroke: var(--line);
 }
 .main-branch .node-name {
   font-size: 14px;
@@ -363,6 +358,18 @@
   padding: 0 12px;
   background: transparent;
   font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.switch-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .tree-toolbar .view-switch button.active {
   background: #fff;

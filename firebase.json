@@ -1,10 +1,12 @@
 {
   "hosting": {
+    "site": "aldhfyan-family",
     "public": ".",
     "ignore": [
       "firebase.json",
       "firestore.rules",
       "README.md",
+      "shajarat-aldhfyan-original.pdf",
       "**/.*",
       "**/node_modules/**"
     ],

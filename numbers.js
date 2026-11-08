@@ -1,4 +1,6 @@
 const people = window.SEED_PEOPLE || [];
+const escHtml = (s) =>
+  String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const ar = (n) => Number(n).toLocaleString("ar-SA");
 const norm = (s) =>
   (s || "")
@@ -49,7 +51,7 @@ const branches = root ? children.get(root.id) || [] : [];
 document.querySelector("#branchBreakdown").innerHTML = branches
   .map(
     (branch) =>
-      `<article><b>${branch.name}</b><span>${ar(countDesc(branch.id) + 1)} شخصاً</span></article>`,
+      `<article><b>${escHtml(branch.name)}</b><span>${ar(countDesc(branch.id) + 1)} شخصاً</span></article>`,
   )
   .join("");
 const values = [...counts.values()];
@@ -57,7 +59,7 @@ const draw = (id, list) =>
   (document.querySelector(id).innerHTML = list
     .map(
       (x, i) =>
-        `<div><i>${ar(i + 1)}</i><b>${x.name}</b><span>${ar(x.count)} شخصاً</span></div>`,
+        `<div><i>${ar(i + 1)}</i><b>${escHtml(x.name)}</b><span>${ar(x.count)} شخصاً</span></div>`,
     )
     .join(""));
 draw(

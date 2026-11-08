@@ -27,3 +27,23 @@
     });
   });
 })();
+
+// Slim the header once the page is scrolled.
+(function () {
+  let ticking = false;
+  const update = () => {
+    document.body.classList.toggle("scrolled", window.scrollY > 24);
+    ticking = false;
+  };
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    },
+    { passive: true },
+  );
+  update();
+})();
